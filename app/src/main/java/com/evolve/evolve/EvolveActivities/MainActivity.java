@@ -16,7 +16,7 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.util.ArrayList;
 
-import EvolveAdapters.MainPageAdapter;
+import EvolveAdapters.MainpagePagerAdapter;
 import EvolveFragments.GalleryFragment;
 import EvolveFragments.QuickListFragment;
 
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab1,fab2;
     private FloatingActionsMenu fabMenu;
     private ArrayList<Fragment> list;
-    private MainPageAdapter adapter;
+    private MainpagePagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         instantiate();
 
-        adapter=new MainPageAdapter(getSupportFragmentManager(),list);
+        adapter=new MainpagePagerAdapter(getSupportFragmentManager(),list);
         pager.setAdapter(adapter);
 
         fab1.setOnClickListener(new View.OnClickListener() {

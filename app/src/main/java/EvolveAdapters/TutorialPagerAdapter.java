@@ -7,19 +7,20 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import java.util.ArrayList;
 
 /**
- * Created by ddvlslyr on 15/9/15.
+ * Created by ddvlslyr on 16/9/15.
  */
-public class MainPageAdapter extends FragmentStatePagerAdapter {
+public class TutorialPagerAdapter extends FragmentStatePagerAdapter {
 
-    ArrayList<Fragment> list;
-    public MainPageAdapter(FragmentManager fm,ArrayList<Fragment> list) {
+    private ArrayList<Fragment> list;
+
+    public TutorialPagerAdapter(FragmentManager fm,ArrayList<Fragment> list) {
         super(fm);
         this.list=list;
     }
 
     @Override
-    public Fragment getItem(int i) {
-        return list.get(i);
+    public Fragment getItem(int position) {
+        return list.get(position);
     }
 
     @Override
