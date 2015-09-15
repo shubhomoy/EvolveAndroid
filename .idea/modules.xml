@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/EvolveAndroid.iml" filepath="$PROJECT_DIR$/EvolveAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/evolve.iml" filepath="$PROJECT_DIR$/evolve.iml" />
     </modules>
   </component>
 </project>
