@@ -16,9 +16,9 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.util.ArrayList;
 
-import adapters.MainPageAdapter;
-import fragments.GalleryFragment;
-import fragments.QuickListFragment;
+import EvolveAdapters.MainPageAdapter;
+import EvolveFragments.GalleryFragment;
+import EvolveFragments.QuickListFragment;
 
 public class MainActivity extends AppCompatActivity {
 
