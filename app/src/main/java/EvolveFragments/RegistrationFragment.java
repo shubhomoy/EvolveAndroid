@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,9 @@ import android.widget.Button;
 
 import com.evolve.evolve.EvolveActivities.MainActivity;
 import com.evolve.evolve.R;
+import com.google.gson.Gson;
+
+import EvolveObjects.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,7 +56,7 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
             view.findViewById(R.id.otp_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(getActivity(), MainActivity.class));
+                    startActivity(new Intent(getActivity(),MainActivity.class));
                     getActivity().finish();
                 }
             });
