@@ -59,9 +59,6 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
 
             dialog.setCancelable(false);
             dialog.create().show();
-
-
-
         }
 
     }
