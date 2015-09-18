@@ -61,6 +61,7 @@ public class PreviewActivity extends AppCompatActivity {
                 File source=new File (Environment.getExternalStoragePublicDirectory("Evolve/temp"),"img_"+file_name+".jpg");
                 File destination=new File (Environment.getExternalStoragePublicDirectory("Evolve/"),"img_"+file_name+".jpg");
                 source.renameTo(destination);
+                setResult(RESULT_OK);
                 finish();
                 break;
         }

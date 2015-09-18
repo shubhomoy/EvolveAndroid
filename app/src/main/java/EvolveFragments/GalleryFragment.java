@@ -25,15 +25,34 @@ public class GalleryFragment extends Fragment {
 
     private RecyclerView recyclerView_images;
     private GalleryAdapter galleryAdapter;
+    private ArrayList<String> file_names;
 
     public GalleryFragment() {
         // Required empty public constructor
     }
 
+    public void refreshGallery() {
+        file_names.removeAll(file_names);
+        file_names.clear();
+        File evolve = new File(Environment.getExternalStorageDirectory(), "Evolve");
+        if(!evolve.exists()){
+            evolve.mkdir();
+        }
+        File folder=new File(Environment.getExternalStorageDirectory(), "Evolve");
+        File[] list_of_files=folder.listFiles();
+        for (int i=0;i<list_of_files.length;i++){
+            if(list_of_files[i].isFile()){
+                file_names.add(list_of_files[i].getName());
+            }
+        }
+        galleryAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        galleryAdapter=new GalleryAdapter(getActivity(),getListOfFiles());
+        file_names=new ArrayList<String>();
+        galleryAdapter=new GalleryAdapter(getActivity(),file_names);
     }
 
     @Override
@@ -43,22 +62,7 @@ public class GalleryFragment extends Fragment {
         recyclerView_images.setHasFixedSize(true);
         recyclerView_images.setAdapter(galleryAdapter);
         recyclerView_images.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        refreshGallery();
         return v;
-    }
-
-    private ArrayList<String> getListOfFiles(){
-        File evolve = new File(Environment.getExternalStorageDirectory(), "Evolve");
-        if(!evolve.exists()){
-            evolve.mkdir();
-        }
-        File folder=new File(Environment.getExternalStorageDirectory(), "Evolve");
-        File[] list_of_files=folder.listFiles();
-        ArrayList<String> file_names=new ArrayList<String>();
-        for (int i=0;i<list_of_files.length;i++){
-            if(list_of_files[i].isFile()){
-                file_names.add(list_of_files[i].getName());
-            }
-        }
-        return file_names;
     }
 }
