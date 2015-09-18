@@ -1,6 +1,7 @@
 package EvolveAdapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
@@ -13,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.evolve.evolve.EvolveActivities.ImagePreviewActivity;
 import com.evolve.evolve.R;
 
 import java.io.File;
@@ -46,8 +48,17 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     }
 
     @Override
-    public void onBindViewHolder(GalleryAdapter.GalleryViewHolder viewHolder, int i) {
+    public void onBindViewHolder(GalleryAdapter.GalleryViewHolder viewHolder, final int i) {
         Glide.with(context).load(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+filename.get(i)).into(viewHolder.images);
+        viewHolder.images.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ImagePreviewActivity.class);
+                intent.putExtra("filename", filename.get(i));
+                context.startActivity(intent);
+            }
+        });
+
     }
 
     @Override
