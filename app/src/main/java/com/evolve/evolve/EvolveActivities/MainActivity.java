@@ -54,8 +54,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         instantiate();
-
-        //recyclerView_images.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MainpagePagerAdapter(getSupportFragmentManager(), pageList);
         pager.setAdapter(adapter);
 

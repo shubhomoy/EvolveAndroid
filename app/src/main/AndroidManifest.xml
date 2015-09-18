@@ -27,6 +27,10 @@
             android:name=".EvolveActivities.PreviewActivity"
             android:label="@string/title_activity_preview" >
         </activity>
+        <activity
+            android:name=".EvolveActivities.ImagePreviewActivity"
+            android:label="@string/title_activity_preview" >
+        </activity>
     </application>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
