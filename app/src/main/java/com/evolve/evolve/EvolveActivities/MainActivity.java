@@ -1,10 +1,19 @@
 package com.evolve.evolve.EvolveActivities;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,8 +23,12 @@ import com.evolve.evolve.R;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
+import EvolveAdapters.GalleryAdapter;
 import EvolveAdapters.MainpagePagerAdapter;
 import EvolveFragments.GalleryFragment;
 import EvolveFragments.QuickListFragment;
@@ -24,10 +37,14 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private ViewPager pager;
-    private FloatingActionButton fab1,fab2;
+    private FloatingActionButton fab1,cameraBtn;
     private FloatingActionsMenu fabMenu;
-    private ArrayList<Fragment> list;
+    private ArrayList<Fragment> pageList;
     private MainpagePagerAdapter adapter;
+    private File image_file;
+    public String timeStamp;
+
+    private int CAMERA_CAPTURE_TAG = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,20 +53,23 @@ public class MainActivity extends AppCompatActivity {
 
         instantiate();
 
-        adapter=new MainpagePagerAdapter(getSupportFragmentManager(),list);
+        //recyclerView_images.setLayoutManager(new LinearLayoutManager(this));
+        adapter=new MainpagePagerAdapter(getSupportFragmentManager(),pageList);
         pager.setAdapter(adapter);
 
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "SortByName", Toast.LENGTH_SHORT).show();
+
             }
         });
 
-        fab2.setOnClickListener(new View.OnClickListener() {
+        cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"SortByAddress",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this,"SortByAddress",Toast.LENGTH_SHORT).show();
+                camera_process();
             }
         });
 
@@ -62,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                switch (position){
+                switch (position) {
                     case 0:
                         fabMenu.setVisibility(View.VISIBLE);
                         break;
@@ -84,13 +104,50 @@ public class MainActivity extends AppCompatActivity {
         toolbar= (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         pager= (ViewPager) findViewById(R.id.view_pager);
-        list=new ArrayList<>();
-        list.add(new GalleryFragment());
-        list.add(new QuickListFragment());
+        pageList=new ArrayList<>();
+        pageList.add(new GalleryFragment());
+        pageList.add(new QuickListFragment());
 
         fabMenu= (FloatingActionsMenu) findViewById(R.id.multiple_actions);
         fab1= (FloatingActionButton) findViewById(R.id.action_a);
-        fab2= (FloatingActionButton) findViewById(R.id.action_b);
+        cameraBtn= (FloatingActionButton) findViewById(R.id.action_b);
+    }
+
+    public void camera_process(){
+            timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            File evolve = new File(Environment.getExternalStorageDirectory(), "Evolve");
+            if(!evolve.exists()){
+                evolve.mkdir();
+            }
+            File temp=new File(evolve,"temp");
+            if(!temp.exists()){
+                temp.mkdir();
+            }
+            image_file = new File(Environment.getExternalStoragePublicDirectory("Evolve/temp"),"img_"+timeStamp+".jpg");
+            Uri uri = Uri.fromFile(image_file);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+            startActivityForResult(intent, CAMERA_CAPTURE_TAG);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == CAMERA_CAPTURE_TAG){
+            switch (resultCode){
+                case Activity.RESULT_OK:
+                    if(image_file.exists()){
+                        Intent in=new Intent(MainActivity.this,PreviewActivity.class);
+                        in.putExtra("file", timeStamp);
+                        startActivity(in);
+                    }else{
+                        Toast.makeText(this,"Something went wrong",Toast.LENGTH_LONG).show();
+                    }
+                    break;
+                case Activity.RESULT_CANCELED:
+                    break;
+            }
+        }
     }
 
     @Override

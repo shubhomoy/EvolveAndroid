@@ -39,22 +39,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="@color/primaryColor"
-                fab:fab_title="SortByName"
                 fab:fab_colorPressed="@color/primaryColorDark"
-                fab:fab_size="mini"/>
-                <!--android:src="@drawable/ic_action_search"-->
+                fab:fab_size="mini"
+                fab:fab_title="SortByName" />
+            <!--android:src="@drawable/ic_action_search"-->
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/action_b"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="@color/primaryColor"
-                fab:fab_title="SortByDate"
                 fab:fab_colorPressed="@color/primaryColorDark"
-                fab:fab_size="mini"/>
+                fab:fab_size="mini"
+                fab:fab_title="SortByDate" />
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 
+
     </RelativeLayout>
+
 
 </LinearLayout>
