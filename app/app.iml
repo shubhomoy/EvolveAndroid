@@ -99,5 +99,6 @@
     <orderEntry type="library" exported="" name="floatingactionbutton-1.10.0" level="project" />
     <orderEntry type="library" exported="" name="glide-3.5.2" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.2.1" level="project" />
+    <orderEntry type="module" module-name="volley" exported="" />
   </component>
 </module>
