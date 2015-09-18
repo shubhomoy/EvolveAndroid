@@ -4,12 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context="EvolveFragments.RegistrationFragment">
+    tools:context="com.evolve.evolve.EvolveActivities.EvolveFragments.RegistrationFragment">
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"/>
+        android:hint="Email"
+        android:id="@+id/email"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -17,7 +18,8 @@
         android:inputType="number"
         android:maxLength="10"
         android:layout_marginTop="10dp"
-        android:hint="Mobile"/>
+        android:hint="Mobile"
+        android:id="@+id/mobile"/>
 
     <Button
         android:id="@+id/submit"

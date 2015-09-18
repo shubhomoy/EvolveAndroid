@@ -1,17 +1,11 @@
-package EvolveAdapters;
+package com.evolve.evolve.EvolveActivities.EvolveAdapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
-<<<<<<< HEAD
 import android.content.DialogInterface;
-=======
 import android.content.Intent;
->>>>>>> origin/master
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +18,6 @@ import com.evolve.evolve.R;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Locale;
 
 /**
  * Created by vellapanti on 17/9/15.
@@ -53,7 +46,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     }
 
     @Override
-<<<<<<< HEAD
     public void onBindViewHolder(final GalleryAdapter.GalleryViewHolder viewHolder, final int i) {
         Glide.with(context).load(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+filename.get(i)).into(viewHolder.images);
         viewHolder.images.setOnLongClickListener(new View.OnLongClickListener() {
@@ -68,7 +60,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                         file.delete();
                         filename.remove(i);
                         GalleryAdapter.this.notifyDataSetChanged();
-
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -81,9 +72,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                 return true;
             }
         });
-=======
-    public void onBindViewHolder(GalleryAdapter.GalleryViewHolder viewHolder, final int i) {
-        Glide.with(context).load(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+filename.get(i)).into(viewHolder.images);
         viewHolder.images.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,8 +80,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                 context.startActivity(intent);
             }
         });
-
->>>>>>> origin/master
     }
 
     @Override

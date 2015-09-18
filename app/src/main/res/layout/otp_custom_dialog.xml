@@ -13,9 +13,10 @@
         android:layout_gravity="center"/>
 
     <EditText
+        android:id="@+id/otp_et"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLength="4"
+        android:maxLength="5"
         android:hint="OTP"
         android:inputType="number"
         android:textSize="15sp"

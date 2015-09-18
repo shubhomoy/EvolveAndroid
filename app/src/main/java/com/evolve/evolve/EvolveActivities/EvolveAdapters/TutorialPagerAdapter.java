@@ -1,4 +1,4 @@
-package EvolveAdapters;
+package com.evolve.evolve.EvolveActivities.EvolveAdapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

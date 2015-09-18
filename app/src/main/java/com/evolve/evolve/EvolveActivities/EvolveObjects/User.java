@@ -1,4 +1,4 @@
-package EvolveObjects;
+package com.evolve.evolve.EvolveActivities.EvolveObjects;
 
 /**
  * Created by ddvlslyr on 16/9/15.
@@ -9,4 +9,6 @@ public class User {
     public String phone;
     public String created_at;
     public String updated_at;
+    public String otp;
+    public String access_token;
 }

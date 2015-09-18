@@ -1,4 +1,4 @@
-package EvolveUtilities;
+package com.evolve.evolve.EvolveActivities.EvolveUtilities;
 
 import android.app.Application;
 import android.content.Context;

@@ -1,11 +1,10 @@
-package EvolveFragments;
+package com.evolve.evolve.EvolveActivities.EvolveFragments;
 
 
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,7 @@ import com.evolve.evolve.R;
 import java.io.File;
 import java.util.ArrayList;
 
-import EvolveAdapters.GalleryAdapter;
+import com.evolve.evolve.EvolveActivities.EvolveAdapters.GalleryAdapter;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -1,6 +1,5 @@
 package com.evolve.evolve.EvolveActivities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
@@ -9,16 +8,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolvePreferences;
 import com.evolve.evolve.R;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
@@ -28,10 +24,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import EvolveAdapters.GalleryAdapter;
-import EvolveAdapters.MainpagePagerAdapter;
-import EvolveFragments.GalleryFragment;
-import EvolveFragments.QuickListFragment;
+import com.evolve.evolve.EvolveActivities.EvolveAdapters.MainpagePagerAdapter;
+import com.evolve.evolve.EvolveActivities.EvolveFragments.GalleryFragment;
+import com.evolve.evolve.EvolveActivities.EvolveFragments.QuickListFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -107,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
         galleryFragment = new GalleryFragment();
         pageList.add(galleryFragment);
         pageList.add(new QuickListFragment());
-
         fabMenu = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
         fab1 = (FloatingActionButton) findViewById(R.id.action_a);
         cameraBtn = (FloatingActionButton) findViewById(R.id.action_b);
