@@ -1,6 +1,8 @@
 package EvolveAdapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
@@ -46,8 +48,33 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     }
 
     @Override
-    public void onBindViewHolder(GalleryAdapter.GalleryViewHolder viewHolder, int i) {
+    public void onBindViewHolder(final GalleryAdapter.GalleryViewHolder viewHolder, final int i) {
         Glide.with(context).load(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+filename.get(i)).into(viewHolder.images);
+        viewHolder.images.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                final AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                builder.setTitle("Do you want to delete this pic?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        File file=new File(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+filename.get(i));
+                        file.delete();
+                        filename.remove(i);
+                        GalleryAdapter.this.notifyDataSetChanged();
+
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.create().show();
+                return true;
+            }
+        });
     }
 
     @Override
