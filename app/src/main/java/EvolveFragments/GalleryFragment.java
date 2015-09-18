@@ -47,6 +47,10 @@ public class GalleryFragment extends Fragment {
     }
 
     private ArrayList<String> getListOfFiles(){
+        File evolve = new File(Environment.getExternalStorageDirectory(), "Evolve");
+        if(!evolve.exists()){
+            evolve.mkdir();
+        }
         File folder=new File(Environment.getExternalStorageDirectory(), "Evolve");
         File[] list_of_files=folder.listFiles();
         ArrayList<String> file_names=new ArrayList<String>();

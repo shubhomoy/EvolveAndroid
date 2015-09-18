@@ -7,3 +7,5 @@
 /captures
 .idea/gradle.xml
 app/app.iml
+.idea/runConfigurations.xml
+

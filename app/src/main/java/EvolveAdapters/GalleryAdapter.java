@@ -9,8 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.evolve.evolve.R;
 
 import java.io.File;
@@ -24,23 +26,28 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
     private LayoutInflater inflater;
     private ArrayList<String> filename;
+    float width;
+    Context context;
+
     public GalleryAdapter(Context context,ArrayList<String> file_name){
+        this.context = context;
         inflater=LayoutInflater.from(context);
         filename=file_name;
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        width = wm.getDefaultDisplay().getWidth() / 3;
     }
 
     @Override
     public GalleryAdapter.GalleryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
 
         View view=inflater.inflate(R.layout.custom_galleryview,viewGroup ,false);
-        GalleryViewHolder galleryViewHolder=new GalleryViewHolder(view);
+        GalleryViewHolder galleryViewHolder=new GalleryViewHolder(view, width);
         return galleryViewHolder;
     }
 
     @Override
     public void onBindViewHolder(GalleryAdapter.GalleryViewHolder viewHolder, int i) {
-        Bitmap bitmap= BitmapFactory.decodeFile(Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(i));
-        viewHolder.images.setImageBitmap(bitmap);
+        Glide.with(context).load(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+filename.get(i)).into(viewHolder.images);
     }
 
     @Override
@@ -50,9 +57,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
     class GalleryViewHolder extends RecyclerView.ViewHolder{
         ImageView images;
-        public GalleryViewHolder(View itemView) {
+        public GalleryViewHolder(View itemView, float width) {
             super(itemView);
             images=(ImageView) itemView.findViewById(R.id.gallery_image);
+            images.getLayoutParams().height = (int)width;
+            images.getLayoutParams().width = (int)width;
         }
     }
 }
