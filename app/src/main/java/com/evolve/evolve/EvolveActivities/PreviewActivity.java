@@ -3,6 +3,7 @@ package com.evolve.evolve.EvolveActivities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,9 +13,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.ImageManipulator;
 import com.evolve.evolve.R;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -61,6 +64,13 @@ public class PreviewActivity extends AppCompatActivity {
                 File source=new File (Environment.getExternalStoragePublicDirectory("Evolve/temp"),"img_"+file_name+".jpg");
                 File destination=new File (Environment.getExternalStoragePublicDirectory("Evolve/"),"img_"+file_name+".jpg");
                 source.renameTo(destination);
+
+//                try {
+//                    ImageManipulator.writeExifInfo(Environment.getExternalStorageDirectory().toString()+"/Evolve/img_"+file_name+".jpg", 1);
+//                } catch (IOException e) {
+//
+//                }
+
                 setResult(RESULT_OK);
                 finish();
                 break;

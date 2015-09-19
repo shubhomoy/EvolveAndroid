@@ -20,6 +20,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.evolve.evolve.EvolveActivities.EvolveObjects.User;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.Config;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolvePreferences;
 import com.evolve.evolve.EvolveActivities.MainActivity;
 import com.evolve.evolve.R;
@@ -79,7 +80,7 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
             @Override
             public void onClick(View v) {
 
-                String url="http://192.168.43.199:3000/api/users/verify";
+                String url= Config.apiUrl+"/api/users/verify";
                 StringRequest stringRequest=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -122,7 +123,7 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View v) {
 
-        String url = "http://192.168.43.199:3000/api/users/login";
+        String url = Config.apiUrl+"/api/users/login";
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
