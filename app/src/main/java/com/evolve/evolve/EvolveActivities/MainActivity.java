@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveDatabase;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolvePreferences;
 import com.evolve.evolve.R;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -42,13 +43,14 @@ public class MainActivity extends AppCompatActivity {
 
     private int CAMERA_CAPTURE_TAG = 0;
     private int PREVIEW_TAG = 1;
-
+    EvolveDatabase evolveDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         instantiate();
+
         adapter = new MainpagePagerAdapter(getSupportFragmentManager(), pageList);
         pager.setAdapter(adapter);
 
@@ -105,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         fabMenu = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
         fab1 = (FloatingActionButton) findViewById(R.id.action_a);
         cameraBtn = (FloatingActionButton) findViewById(R.id.action_b);
+        evolveDatabase=new EvolveDatabase(this);
     }
 
     public void camera_process() {
