@@ -232,7 +232,6 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
             post.setHeader("id", String.valueOf(prefs.getId()));
             post.setHeader("access_token", prefs.getAccessToken());
             MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-            entity.addPart("image", new FileBody(new File(strings[0])));
             try {
                 entity.addPart("image_description", new StringBody("description"));
                 entity.addPart("image_date", new StringBody("23-09-2015"));
@@ -242,6 +241,7 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
             } catch (UnsupportedEncodingException e) {
                 return null;
             }
+            entity.addPart("image", new FileBody(new File(strings[0])));
             post.setEntity(entity);
             try {
                 HttpResponse response = client.execute(post);
