@@ -41,7 +41,8 @@
                 fab:fab_colorNormal="@color/primaryColor"
                 fab:fab_colorPressed="@color/primaryColorDark"
                 fab:fab_size="mini"
-                fab:fab_title="SortByName" />
+                android:src="@mipmap/ic_file_upload_white_18dp"
+                fab:fab_title="Upload" />
             <!--android:src="@drawable/ic_action_search"-->
 
             <com.getbase.floatingactionbutton.FloatingActionButton
@@ -51,7 +52,8 @@
                 fab:fab_colorNormal="@color/primaryColor"
                 fab:fab_colorPressed="@color/primaryColorDark"
                 fab:fab_size="mini"
-                fab:fab_title="SortByDate" />
+                android:src="@mipmap/ic_camera_alt_white_18dp"
+                fab:fab_title="Take Picture" />
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 

@@ -1,17 +1,19 @@
 package com.evolve.evolve.EvolveActivities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.ExifInterface;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -19,16 +21,30 @@ import android.view.MenuItem;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.evolve.evolve.EvolveActivities.EvolveUtilities.ImageManipulator;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.Config;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolvePreferences;
 import com.evolve.evolve.R;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.util.EntityUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.UnsupportedEncodingException;
 
-public class PreviewActivity extends AppCompatActivity {
+public class PreviewActivity extends AppCompatActivity implements LocationListener {
 
     private Toolbar toolbar;
     private ImageView previewImageView;
@@ -36,11 +52,60 @@ public class PreviewActivity extends AppCompatActivity {
     private Intent mainIntent;
     private double latitude;
     private double longitude;
-    private boolean isGPSEnabled;
-    private boolean isNetworkEnabled;
     protected LocationManager locationManager;
     public Location location;
     CheckBox checkBox;
+    EvolvePreferences prefs;
+    ProgressDialog pDialog;
+
+    private final int NAVIGATION_TAG = 1;
+
+    private void instantiate() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        previewImageView = (ImageView) findViewById(R.id.image_temp);
+        mainIntent = getIntent();
+        checkBox = (CheckBox) findViewById(R.id.loc);
+        prefs = new EvolvePreferences(this);
+        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+    }
+
+    void shareLocation(final String provider) {
+        if (provider.equals("network")) {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                    1000 * 60, 10, PreviewActivity.this);
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    1000 * 60, 300, PreviewActivity.this);
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean flag = true;
+                while (flag) {
+                    if (provider.equals("network"))
+                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    else
+                        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (location != null) {
+                        flag = false;
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
+                    }
+                }
+                if (!flag) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(PreviewActivity.this, "Lat : " + latitude + " Lon : " + longitude, Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        }).start();
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,37 +115,25 @@ public class PreviewActivity extends AppCompatActivity {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean choice) {
-                if(choice){
-                    isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-                    isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-                    if(isGPSEnabled && isNetworkEnabled) {
-                        location=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        latitude = location.getLatitude();
-                        longitude = location.getLongitude();
-                        Log.d("gps",String.valueOf(latitude)+ " " + String.valueOf(longitude));
-                    }
-                    else{
+                if (choice) {
+                    boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                    boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+                    if (!isGPSEnabled && !isNetworkEnabled) {
                         showSettingsAlert();
                         checkBox.setChecked(false);
+                    } else {
+                        if (isNetworkEnabled) {
+                            shareLocation("network");
+                        } else if (isGPSEnabled) {
+                            shareLocation("geo");
+                        }
                     }
                 }
             }
         });
-        file_name=mainIntent.getStringExtra("file");
-        Bitmap bitmap= BitmapFactory.decodeFile(Environment.getExternalStorageDirectory().toString()+"/Evolve/temp/img_"+file_name+".jpg");
+        file_name = mainIntent.getStringExtra("file");
+        Bitmap bitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory().toString() + "/Evolve/temp/img_" + file_name + ".jpg");
         previewImageView.setImageBitmap(bitmap);
-
-
-    }
-
-
-    private void instantiate(){
-        toolbar= (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        previewImageView=(ImageView)findViewById(R.id.image_temp);
-        mainIntent = getIntent();
-        checkBox=(CheckBox)findViewById(R.id.loc);
-        locationManager=(LocationManager) this.getSystemService(LOCATION_SERVICE);
     }
 
     @Override
@@ -98,9 +151,11 @@ public class PreviewActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.done:
-                File source=new File (Environment.getExternalStoragePublicDirectory("Evolve/temp"),"img_"+file_name+".jpg");
-                File destination=new File (Environment.getExternalStoragePublicDirectory("Evolve/"),"img_"+file_name+".jpg");
+                File source = new File(Environment.getExternalStoragePublicDirectory("Evolve/temp"), "img_" + file_name + ".jpg");
+                File destination = new File(Environment.getExternalStoragePublicDirectory("Evolve/"), "img_" + file_name + ".jpg");
                 source.renameTo(destination);
+
+                new UploadPictureHttp().execute(Environment.getExternalStorageDirectory().toString()+"/Evolve/img_" + file_name + ".jpg");
 
 //                try {
 //                    ImageManipulator.writeExifInfo(Environment.getExternalStorageDirectory().toString()+"/Evolve/img_"+file_name+".jpg", 1);
@@ -116,7 +171,7 @@ public class PreviewActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void showSettingsAlert(){
+    public void showSettingsAlert() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(PreviewActivity.this);
         alertDialog.setTitle("GPS is settings");
         alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
@@ -124,7 +179,7 @@ public class PreviewActivity extends AppCompatActivity {
         alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
+                startActivityForResult(intent, NAVIGATION_TAG);
             }
         });
 
@@ -137,6 +192,78 @@ public class PreviewActivity extends AppCompatActivity {
         alertDialog.create().show();
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
+    }
 
 
+    private class UploadPictureHttp extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            Config config = new Config();
+            String res = null;
+            HttpParams params = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(params, 60000);
+            HttpConnectionParams.setSoTimeout(params, 60000);
+            HttpClient client = new DefaultHttpClient(params);
+            HttpPost post = new HttpPost(config.apiUrl + "/api/upload");
+            post.setHeader("id", String.valueOf(prefs.getId()));
+            post.setHeader("access_token", prefs.getAccessToken());
+            MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+            entity.addPart("image", new FileBody(new File(strings[0])));
+            try {
+                entity.addPart("image_description", new StringBody("description"));
+                entity.addPart("image_date", new StringBody("23-09-2015"));
+                entity.addPart("image_name", new StringBody("name"));
+                entity.addPart("image_lon", new StringBody("67"));
+                entity.addPart("image_lat", new StringBody("23"));
+            } catch (UnsupportedEncodingException e) {
+                return null;
+            }
+            post.setEntity(entity);
+            try {
+                HttpResponse response = client.execute(post);
+                res = EntityUtils.toString(response.getEntity());
+                return res;
+            } catch (IOException e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (s != null) {
+                Log.d("option", s);
+//                File file = new File(picturePath2);
+//                file.delete();
+//                setResult(RESULT_OK);
+//                finish();
+            } else {
+                Toast.makeText(PreviewActivity.this, "Connection Timeout", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
