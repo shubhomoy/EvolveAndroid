@@ -33,6 +33,7 @@
             android:minLines="2"
             android:maxLines="5"
             android:lines="5"
+            android:id="@+id/des"
             android:scrollbars="vertical"/>
 
 

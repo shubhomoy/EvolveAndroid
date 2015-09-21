@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveDatabase;
@@ -108,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         fab1 = (FloatingActionButton) findViewById(R.id.action_a);
         cameraBtn = (FloatingActionButton) findViewById(R.id.action_b);
         evolveDatabase=new EvolveDatabase(this);
+
     }
 
     public void camera_process() {
