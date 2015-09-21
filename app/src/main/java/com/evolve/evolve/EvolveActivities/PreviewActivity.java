@@ -20,9 +20,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.StringRequest;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.Config;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolvePreferences;
 import com.evolve.evolve.R;
@@ -43,6 +45,9 @@ import org.apache.http.util.EntityUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
 
 public class PreviewActivity extends AppCompatActivity implements LocationListener {
 
@@ -57,9 +62,9 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
     CheckBox checkBox;
     EvolvePreferences prefs;
     ProgressDialog pDialog;
-
+    private EditText description;
     private final int NAVIGATION_TAG = 1;
-
+    private String img_date;
     private void instantiate() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -68,6 +73,7 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
         checkBox = (CheckBox) findViewById(R.id.loc);
         prefs = new EvolvePreferences(this);
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+        description=(EditText)findViewById(R.id.des);
     }
 
     void shareLocation(final String provider) {
@@ -131,6 +137,7 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
                 }
             }
         });
+
         file_name = mainIntent.getStringExtra("file");
         Bitmap bitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory().toString() + "/Evolve/temp/img_" + file_name + ".jpg");
         previewImageView.setImageBitmap(bitmap);
@@ -154,8 +161,8 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
                 File source = new File(Environment.getExternalStoragePublicDirectory("Evolve/temp"), "img_" + file_name + ".jpg");
                 File destination = new File(Environment.getExternalStoragePublicDirectory("Evolve/"), "img_" + file_name + ".jpg");
                 source.renameTo(destination);
-
-                new UploadPictureHttp().execute(Environment.getExternalStorageDirectory().toString()+"/Evolve/img_" + file_name + ".jpg");
+                img_date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                new UploadPictureHttp(description.getText().toString(),img_date,file_name,String.valueOf(longitude),String.valueOf(latitude)).execute(Environment.getExternalStorageDirectory().toString()+"/Evolve/img_" + file_name + ".jpg");
 
 //                try {
 //                    ImageManipulator.writeExifInfo(Environment.getExternalStorageDirectory().toString()+"/Evolve/img_"+file_name+".jpg", 1);
@@ -214,7 +221,18 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
 
 
     private class UploadPictureHttp extends AsyncTask<String, String, String> {
-
+        String desc;
+        String date;
+        String name;
+        String lon;
+        String lat;
+        public UploadPictureHttp(String desc,String date,String name,String lon ,String lat){
+            this.desc=desc;
+            this.date=date;
+            this.name=name;
+            this.lon=lon;
+            this.lat=lat;
+        }
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -234,11 +252,11 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
             MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
             entity.addPart("image", new FileBody(new File(strings[0])));
             try {
-                entity.addPart("image_description", new StringBody("description"));
-                entity.addPart("image_date", new StringBody("23-09-2015"));
-                entity.addPart("image_name", new StringBody("name"));
-                entity.addPart("image_lon", new StringBody("67"));
-                entity.addPart("image_lat", new StringBody("23"));
+                entity.addPart("image_description", new StringBody(desc));
+                entity.addPart("image_date", new StringBody(date));
+                entity.addPart("image_name", new StringBody(name));
+                entity.addPart("image_lon", new StringBody(lon));
+                entity.addPart("image_lat", new StringBody(lat));
             } catch (UnsupportedEncodingException e) {
                 return null;
             }
