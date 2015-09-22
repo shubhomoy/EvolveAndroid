@@ -169,12 +169,6 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
                 img_date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                 new UploadPictureHttp(description.getText().toString(),img_date,file_name,String.valueOf(longitude),String.valueOf(latitude)).execute(Environment.getExternalStorageDirectory().toString()+"/Evolve/img_" + file_name + ".jpg");
 
-//                try {
-//                    ImageManipulator.writeExifInfo(Environment.getExternalStorageDirectory().toString()+"/Evolve/img_"+file_name+".jpg", 1);
-//                } catch (IOException e) {
-//
-//                }
-
                 setResult(RESULT_OK);
                 finish();
                 break;

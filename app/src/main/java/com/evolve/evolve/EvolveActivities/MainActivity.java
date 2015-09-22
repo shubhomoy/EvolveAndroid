@@ -9,14 +9,21 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.Config;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveDatabase;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolvePreferences;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveRequest;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.VolleySingleton;
 import com.evolve.evolve.R;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
@@ -29,6 +36,8 @@ import java.util.Date;
 import com.evolve.evolve.EvolveActivities.EvolveAdapters.MainpagePagerAdapter;
 import com.evolve.evolve.EvolveActivities.EvolveFragments.GalleryFragment;
 import com.evolve.evolve.EvolveActivities.EvolveFragments.QuickListFragment;
+
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -110,6 +119,22 @@ public class MainActivity extends AppCompatActivity {
         cameraBtn = (FloatingActionButton) findViewById(R.id.action_b);
         evolveDatabase=new EvolveDatabase(this);
 
+    }
+
+    void fetchFromServer() {
+        String url = Config.apiUrl+"/api/fetch/all";
+        EvolveRequest evolveRequest = new EvolveRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("option", response.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("option", error.toString());
+            }
+        }, this);
+        VolleySingleton.getInstance().getRequestQueue().add(evolveRequest);
     }
 
     public void camera_process() {
