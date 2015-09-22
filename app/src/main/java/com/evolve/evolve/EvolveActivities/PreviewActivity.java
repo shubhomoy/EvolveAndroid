@@ -25,9 +25,12 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.StringRequest;
+import com.evolve.evolve.EvolveActivities.EvolveObjects.Image;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.Config;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolvePreferences;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.ImageManipulator;
 import com.evolve.evolve.R;
+import com.google.gson.Gson;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -41,6 +44,8 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -274,11 +279,19 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             if (s != null) {
-                Log.d("option", s);
-//                File file = new File(picturePath2);
-//                file.delete();
-//                setResult(RESULT_OK);
-//                finish();
+                Gson gson = new Gson();
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    Image image = gson.fromJson(jsonObject.getString("data"), Image.class);
+                    ImageManipulator manipulator = new ImageManipulator();
+                    try {
+                        manipulator.writeExifInfo(Environment.getExternalStorageDirectory().toString()+"/Evolve/img_" + file_name + ".jpg", image.id);
+                    } catch (IOException e) {
+                        Log.d("option", "unable to write EXIF tag");
+                    }
+                } catch (JSONException e) {
+
+                }
             } else {
                 Toast.makeText(PreviewActivity.this, "Connection Timeout", Toast.LENGTH_SHORT).show();
             }
