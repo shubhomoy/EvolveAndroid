@@ -21,8 +21,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.Config;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveDatabase;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolvePreferences;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveRequest;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.VolleySingleton;
 import com.evolve.evolve.R;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
@@ -41,6 +47,8 @@ import java.util.Date;
 import com.evolve.evolve.EvolveActivities.EvolveAdapters.MainpagePagerAdapter;
 import com.evolve.evolve.EvolveActivities.EvolveFragments.GalleryFragment;
 import com.evolve.evolve.EvolveActivities.EvolveFragments.QuickListFragment;
+
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -128,7 +136,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+<<<<<<< HEAD
 //In this function the camera is opened and a pic is clicked and the file name is created
+=======
+
+    void fetchFromServer() {
+        String url = Config.apiUrl+"/api/fetch/all";
+        EvolveRequest evolveRequest = new EvolveRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("option", response.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("option", error.toString());
+            }
+        }, this);
+        VolleySingleton.getInstance().getRequestQueue().add(evolveRequest);
+    }
+
+>>>>>>> origin/master
     public void camera_process() {
         timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
