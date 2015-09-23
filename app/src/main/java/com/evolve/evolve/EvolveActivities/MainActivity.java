@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     private File image_file;
     public String timeStamp;
     private GalleryFragment galleryFragment;
-
     private int CAMERA_CAPTURE_TAG = 0;
     private int PREVIEW_TAG = 1;
     private int RESULT_LOAD_IMG=2;
