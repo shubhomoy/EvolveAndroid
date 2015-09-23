@@ -29,7 +29,7 @@ public class GalleryFragment extends Fragment {
     public GalleryFragment() {
         // Required empty public constructor
     }
-
+//This function is called whenever a new pic is uploaded (to refresh the main gallery)
     public void refreshGallery() {
         file_names.removeAll(file_names);
         file_names.clear();

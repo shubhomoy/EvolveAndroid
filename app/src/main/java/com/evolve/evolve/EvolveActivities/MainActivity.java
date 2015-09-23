@@ -142,6 +142,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+<<<<<<< HEAD
+//In this function the camera is opened and a pic is clicked and the file name is created
+=======
 
     void fetchFromServer() {
         String url = Config.apiUrl+"/api/fetch/all";
@@ -171,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
         VolleySingleton.getInstance().getRequestQueue().add(evolveRequest);
     }
 
+>>>>>>> origin/master
     public void camera_process() {
         timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
