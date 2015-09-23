@@ -10,9 +10,14 @@ import java.io.IOException;
  * Created by shubhomoy on 19/9/15.
  */
 public class ImageManipulator {
-    public static void writeExifInfo(String path, int id) throws IOException {
+    public void writeExifInfo(String path, int id) throws IOException {
         ExifInterface exif = new ExifInterface(path);
         exif.setAttribute(ExifInterface.TAG_MAKE, String.valueOf(id));
         exif.saveAttributes();
+    }
+
+    public int readExifInfo(String path) throws IOException {
+        ExifInterface exif = new ExifInterface(path);
+        return Integer.parseInt(exif.getAttribute(ExifInterface.TAG_MAKE));
     }
 }

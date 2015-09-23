@@ -6,6 +6,7 @@ import android.database.CharArrayBuffer;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.DataSetObserver;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -24,11 +25,13 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.evolve.evolve.EvolveActivities.EvolveObjects.Image;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.Config;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveDatabase;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolvePreferences;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveRequest;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.ImageManipulator;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.VolleySingleton;
 import com.evolve.evolve.R;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -70,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private int RESULT_LOAD_IMG=2;
     EvolveDatabase evolveDatabase;
     ArrayList<Image> imageList;
+    EvolvePreferences prefs;
 
     private void instantiate() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -84,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         uploadBtn = (FloatingActionButton) findViewById(R.id.action_a);
         cameraBtn = (FloatingActionButton) findViewById(R.id.action_b);
         evolveDatabase=new EvolveDatabase(this);
-
+        prefs = new EvolvePreferences(this);
     }
 
     @Override
@@ -141,10 +145,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-//In this function the camera is opened and a pic is clicked and the file name is created
-
-
+    //In this function the camera is opened and a pic is clicked and the file name is created
     void fetchFromServer() {
         String url = Config.apiUrl+"/api/fetch/all";
         EvolveRequest evolveRequest = new EvolveRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -155,16 +156,63 @@ public class MainActivity extends AppCompatActivity {
                     Gson gson = new Gson();
                     imageList.removeAll(imageList);
                     imageList.clear();
+                    File dir = new File(Environment.getExternalStorageDirectory().toString()+"/Evolve");
+                    if(!dir.exists())
+                        dir.mkdir();
+                    String [] files = dir.list();
+                    ImageManipulator manipulator = new ImageManipulator();
                     for(int i=0; i<arr.length(); i++) {
-                        Image image = gson.fromJson(arr.getJSONObject(i).toString(), Image.class);
+                        final Image image = gson.fromJson(arr.getJSONObject(i).toString(), Image.class);
                         imageList.add(image);
+                        boolean flag = false;
+                        for(int j=0; j<files.length; j++) {
+                            File file = new File(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+files[j]);
+                            if(!file.isDirectory()) {
+                                try {
+                                    if(manipulator.readExifInfo(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+files[j]) == image.id) {
+                                        flag = true;
+                                        break;
+                                    }
+                                } catch (Exception e) {
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if(!flag) {
+                            String url = Config.apiUrl+"/images/"+prefs.getId()+"/"+image.id+".jpg";
+                            ImageRequest imageRequest = new ImageRequest(url, new Response.Listener<Bitmap>() {
+                                @Override
+                                public void onResponse(Bitmap response) {
+                                    FileOutputStream fout = null;
+                                    try {
+                                        fout = new FileOutputStream(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+image.id+".jpg");
+                                        response.compress(Bitmap.CompressFormat.JPEG, 100, fout);
+                                    } catch (FileNotFoundException e) {
+
+                                    }finally {
+                                        try {
+                                            fout.close();
+                                        } catch (IOException e) {
+
+                                        }
+                                    }
+                                }
+                            }, 0, 0, null, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.d("option", "Unable to download image");
+                                }
+                            });
+                            VolleySingleton.getInstance().getRequestQueue().add(imageRequest);
+                        }
                         if(!evolveDatabase.checkExif(image)) {
                             evolveDatabase.open();
                             evolveDatabase.insertInformation(image);
                             evolveDatabase.close();
                         }
-                        Log.d("option", image.name);
                     }
+                    adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
 
                 }
