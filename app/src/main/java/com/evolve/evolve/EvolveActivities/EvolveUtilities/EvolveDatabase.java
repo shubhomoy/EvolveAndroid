@@ -26,7 +26,7 @@ public class EvolveDatabase {
     public static final String Picture_Latitude="latitude";
     public static final String Picture_Longitude="longitude";
     public static final String Picture_Slug="slug";
-    public static final String Image_Id="image_id";
+    public static final String Image_ExifTag="image_id";
 
 
     private static class PictureInformation extends SQLiteOpenHelper{
@@ -38,7 +38,7 @@ public class EvolveDatabase {
                 +Picture_Latitude+" VARCHAR(50), "
                 +Picture_Longitude+" VARCHAR(50), "
                 +Picture_Slug + " VARCHAR(50), "
-                +Image_Id + " INTEGER);";
+                +Image_ExifTag + " INTEGER);";
         public PictureInformation(Context context) {
             super(context,Database_Name,null,Database_Version);
 
