@@ -2,6 +2,7 @@ package com.evolve.evolve.EvolveActivities.EvolveUtilities;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.sql.SQLClientInfoException;
@@ -10,11 +11,12 @@ import java.sql.SQLClientInfoException;
  * Created by vellapanti on 19/9/15.
  */
 public class EvolveDatabase {
-    SQLiteDatabase sqLiteDatabase;
-    PictureInformation pictureInformation;
+    SQLiteDatabase db;
+    Context context;
+    DbHelper dbHelper;
     public EvolveDatabase(Context context){
-        pictureInformation=new PictureInformation(context);
-        sqLiteDatabase=pictureInformation.getWritableDatabase();
+        this.context = context;
+        dbHelper = new DbHelper(context);
     }
     public static final int Database_Version=1;
     public static final String Database_Name="EvolveDatabase";
@@ -29,7 +31,7 @@ public class EvolveDatabase {
     public static final String Image_Id="image_id";
 
 
-    private static class PictureInformation extends SQLiteOpenHelper{
+    private static class DbHelper extends SQLiteOpenHelper{
         String tableCreate = "CREATE TABLE "+Table_Name+"("
                 +Picture_Id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +Picture_Name + " VARCHAR(50), "
@@ -39,7 +41,7 @@ public class EvolveDatabase {
                 +Picture_Longitude+" VARCHAR(50), "
                 +Picture_Slug + " VARCHAR(50), "
                 +Image_Id + " INTEGER);";
-        public PictureInformation(Context context) {
+        public DbHelper(Context context) {
             super(context,Database_Name,null,Database_Version);
 
         }
@@ -54,4 +56,18 @@ public class EvolveDatabase {
 
         }
     }
+
+    public void close() {
+        db.close();
+    }
+
+    public void open() throws SQLiteException {
+        try {
+            db = dbHelper.getWritableDatabase();
+        } catch (SQLiteException ex) {
+            db = dbHelper.getReadableDatabase();
+        }
+    }
+
+
 }

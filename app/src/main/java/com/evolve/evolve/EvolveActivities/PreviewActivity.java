@@ -280,6 +280,7 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
                     ImageManipulator manipulator = new ImageManipulator();
                     try {
                         manipulator.writeExifInfo(Environment.getExternalStorageDirectory().toString()+"/Evolve/img_" + file_name + ".jpg", image.id);
+
                     } catch (IOException e) {
                         Log.d("option", "unable to write EXIF tag");
                     }
