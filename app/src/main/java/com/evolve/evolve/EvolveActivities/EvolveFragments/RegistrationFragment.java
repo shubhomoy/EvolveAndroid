@@ -69,7 +69,8 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         prefs = new EvolvePreferences(getActivity());
 
     }
-
+//This function verifies the otp.
+// If the otp is verified server sends an id and access token to the client.
     void showOtpDialog() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -119,10 +120,10 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         dialog.setCancelable(false);
         dialog.create().show();
     }
-
+//Here the e-mail id and phone number is sent to the server and then a response comes
+//with a response of e-mail id, phone number and otp which is then initialised to the user class
     @Override
     public void onClick(View v) {
-
         String url = Config.apiUrl+"/api/users/login";
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {

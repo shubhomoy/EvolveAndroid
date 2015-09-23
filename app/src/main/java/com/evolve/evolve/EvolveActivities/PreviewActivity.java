@@ -70,6 +70,7 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
     private EditText description;
     private final int NAVIGATION_TAG = 1;
     private String img_date;
+
     private void instantiate() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -80,7 +81,8 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
         description=(EditText)findViewById(R.id.des);
     }
-
+// This function is called when the user chooses to
+// share his location and then his latitude and longitude is captured
     void shareLocation(final String provider) {
         if (provider.equals("network")) {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
@@ -182,6 +184,7 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
 
         return super.onOptionsItemSelected(item);
     }
+//This function is called when the GPS of the user is disabled and he chooses to share his location
 
     public void showSettingsAlert() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(PreviewActivity.this);
@@ -224,7 +227,7 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
 
     }
 
-
+//This class is responsible for the uploading of the pic to the server.
     private class UploadPictureHttp extends AsyncTask<String, String, String> {
         String desc;
         String date;

@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+//In this function the camera is opened and a pic is clicked and the file name is created
     public void camera_process() {
         timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
