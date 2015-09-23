@@ -207,6 +207,11 @@ public class MainActivity extends AppCompatActivity {
                             });
                             VolleySingleton.getInstance().getRequestQueue().add(imageRequest);
                         }
+                        if(!evolveDatabase.checkExif(image)) {
+                            evolveDatabase.open();
+                            evolveDatabase.insertInformation(image);
+                            evolveDatabase.close();
+                        }
                     }
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
