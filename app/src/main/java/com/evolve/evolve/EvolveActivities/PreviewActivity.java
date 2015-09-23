@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.android.volley.toolbox.StringRequest;
 import com.evolve.evolve.EvolveActivities.EvolveObjects.Image;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.Config;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveDatabase;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolvePreferences;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.ImageManipulator;
 import com.evolve.evolve.R;
@@ -70,7 +71,7 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
     private EditText description;
     private final int NAVIGATION_TAG = 1;
     private String img_date;
-
+    public  EvolveDatabase database;
     private void instantiate() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -80,6 +81,7 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
         prefs = new EvolvePreferences(this);
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
         description=(EditText)findViewById(R.id.des);
+        database=new EvolveDatabase(this);
     }
 // This function is called when the user chooses to
 // share his location and then his latitude and longitude is captured
@@ -283,6 +285,9 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
                     ImageManipulator manipulator = new ImageManipulator();
                     try {
                         manipulator.writeExifInfo(Environment.getExternalStorageDirectory().toString()+"/Evolve/img_" + file_name + ".jpg", image.id);
+                        database.open();
+                        database.insertInformation(image);
+                        database.close();
                     } catch (IOException e) {
                         Log.d("option", "unable to write EXIF tag");
                     }

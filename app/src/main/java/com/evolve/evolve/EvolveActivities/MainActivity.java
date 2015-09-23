@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.evolve.evolve.EvolveActivities.EvolveObjects.Image;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.Config;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveDatabase;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolvePreferences;
@@ -47,7 +48,10 @@ import java.util.Date;
 import com.evolve.evolve.EvolveActivities.EvolveAdapters.MainpagePagerAdapter;
 import com.evolve.evolve.EvolveActivities.EvolveFragments.GalleryFragment;
 import com.evolve.evolve.EvolveActivities.EvolveFragments.QuickListFragment;
+import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
@@ -66,12 +70,14 @@ public class MainActivity extends AppCompatActivity {
     private int PREVIEW_TAG = 1;
     private int RESULT_LOAD_IMG=2;
     EvolveDatabase evolveDatabase;
+    ArrayList<Image> imageList;
 
     private void instantiate() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         pager = (ViewPager) findViewById(R.id.view_pager);
         pageList = new ArrayList<>();
+        imageList = new ArrayList<Image>();
         galleryFragment = new GalleryFragment();
         pageList.add(galleryFragment);
         pageList.add(new QuickListFragment());
@@ -86,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        fetchFromServer();
         instantiate();
 
         adapter = new MainpagePagerAdapter(getSupportFragmentManager(), pageList);
@@ -136,16 +142,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-<<<<<<< HEAD
+
 //In this function the camera is opened and a pic is clicked and the file name is created
-=======
+
 
     void fetchFromServer() {
         String url = Config.apiUrl+"/api/fetch/all";
         EvolveRequest evolveRequest = new EvolveRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d("option", response.toString());
+                try {
+                    JSONArray arr = new JSONArray(response.getString("data"));
+                    Gson gson = new Gson();
+                    imageList.removeAll(imageList);
+                    imageList.clear();
+                    for(int i=0; i<arr.length(); i++) {
+                        Image image = gson.fromJson(arr.getJSONObject(i).toString(), Image.class);
+                        imageList.add(image);
+                        if(!evolveDatabase.checkExif(image)) {
+                            evolveDatabase.open();
+                            evolveDatabase.insertInformation(image);
+                            evolveDatabase.close();
+                        }
+                        Log.d("option", image.name);
+                    }
+                } catch (JSONException e) {
+
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -156,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
         VolleySingleton.getInstance().getRequestQueue().add(evolveRequest);
     }
 
->>>>>>> origin/master
     public void camera_process() {
         timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
