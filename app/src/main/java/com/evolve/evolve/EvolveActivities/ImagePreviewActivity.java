@@ -8,6 +8,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.evolve.evolve.EvolveActivities.EvolveObjects.Image;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveDatabase;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.ImageManipulator;
 import com.evolve.evolve.R;
 
 /**
@@ -18,11 +21,16 @@ public class ImagePreviewActivity extends AppCompatActivity {
     ImageView imageView;
     TextView descriptionTv;
     Intent mainIntent;
-
+    ImageManipulator imageManipulator;
+    Image image;
+    EvolveDatabase database;
     void instantiate() {
         imageView = (ImageView)findViewById(R.id.imageview);
         descriptionTv = (TextView)findViewById(R.id.description_tv);
         mainIntent = getIntent();
+        imageManipulator=new ImageManipulator();
+        image=new Image();
+        database=new EvolveDatabase(this);
     }
 
     @Override
@@ -32,6 +40,14 @@ public class ImagePreviewActivity extends AppCompatActivity {
         instantiate();
 
         String filename = mainIntent.getStringExtra("filename");
+
         Glide.with(this).load(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+filename).into(imageView);
+        try {
+            int id=imageManipulator.readExifInfo(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+filename);
+            image=database.getImage(id);
+            descriptionTv.setText(image.description);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

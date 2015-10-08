@@ -2,6 +2,7 @@ package com.evolve.evolve.EvolveActivities.EvolveUtilities;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -9,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.evolve.evolve.EvolveActivities.EvolveObjects.Image;
 
+import java.io.IOException;
 import java.sql.SQLClientInfoException;
 
 /**
@@ -50,6 +52,26 @@ public class EvolveDatabase {
              return false;
         else
              return true;
+    }
+    public void deletePicInfo(int exifid){
+        db.delete(Table_Name,Image_ExifTag+"="+exifid,null);
+    }
+    public Image getImage(int id) throws IOException {
+        Cursor cursor=db.rawQuery("select * from "+Table_Name+" where " + Image_ExifTag + "="+ id,null);
+        if(cursor.getCount()==0){
+            throw new IOException();
+        }else{
+            cursor.moveToFirst();
+            Image image = new Image();
+            image.id=cursor.getInt(cursor.getColumnIndex(Image_ExifTag));
+            image.name=cursor.getString(cursor.getColumnIndex(Picture_Name));
+            image.description=cursor.getString(cursor.getColumnIndex(Picture_Description));
+            image.photo_date=cursor.getString(cursor.getColumnIndex(Picture_Date));
+            image.lat=cursor.getString(cursor.getColumnIndex(Picture_Latitude));
+            image.lon=cursor.getString(cursor.getColumnIndex(Picture_Longitude));
+
+            return image;
+        }
     }
     private static class DbHelper extends SQLiteOpenHelper{
         String tableCreate = "CREATE TABLE "+Table_Name+"("

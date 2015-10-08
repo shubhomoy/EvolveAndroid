@@ -16,7 +16,7 @@ public class ImageManipulator {
         exif.saveAttributes();
     }
 
-    public int readExifInfo(String path) throws IOException {
+    public int readExifInfo(String path) throws Exception {
         ExifInterface exif = new ExifInterface(path);
         return Integer.parseInt(exif.getAttribute(ExifInterface.TAG_MAKE));
     }

@@ -13,6 +13,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveDatabase;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.ImageManipulator;
 import com.evolve.evolve.EvolveActivities.ImagePreviewActivity;
 import com.evolve.evolve.R;
 
@@ -28,11 +30,14 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     private ArrayList<String> filename;
     float width;
     Context context;
-
+    ImageManipulator imageManipulator;
+    EvolveDatabase database;
     public GalleryAdapter(Context context,ArrayList<String> file_name){
         this.context = context;
         inflater=LayoutInflater.from(context);
         filename=file_name;
+        database= new EvolveDatabase(context);
+        imageManipulator=new ImageManipulator();
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         width = wm.getDefaultDisplay().getWidth() / 3;
     }
@@ -59,6 +64,14 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                         File file=new File(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+filename.get(i));
                         file.delete();
                         filename.remove(i);
+                        try {
+                            int exifInfoid=imageManipulator.readExifInfo(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+filename.get(i));
+                            database.open();
+                            database.deletePicInfo(exifInfoid);
+                            database.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         GalleryAdapter.this.notifyDataSetChanged();
                     }
                 });
