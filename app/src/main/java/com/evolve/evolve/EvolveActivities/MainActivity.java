@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
         EvolveRequest evolveRequest = new EvolveRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                evolveDatabase.open();
                 try {
                     JSONArray arr = new JSONArray(response.getString("data"));
                     Gson gson = new Gson();
@@ -162,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
                         dir.mkdir();
                     String [] files = dir.list();
                     ImageManipulator manipulator = new ImageManipulator();
+
                     for(int i=0; i<arr.length(); i++) {
                         final Image image = gson.fromJson(arr.getJSONObject(i).toString(), Image.class);
                         imageList.add(image);
@@ -208,15 +210,14 @@ public class MainActivity extends AppCompatActivity {
                             VolleySingleton.getInstance().getRequestQueue().add(imageRequest);
                         }
                         if(!evolveDatabase.checkExif(image)) {
-                            evolveDatabase.open();
                             evolveDatabase.insertInformation(image);
-                            evolveDatabase.close();
                         }
                     }
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
 
                 }
+                evolveDatabase.close();
             }
         }, new Response.ErrorListener() {
             @Override
