@@ -75,6 +75,9 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
     private void instantiate() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Upload");
+
         previewImageView = (ImageView) findViewById(R.id.image_temp);
         mainIntent = getIntent();
         checkBox = (CheckBox) findViewById(R.id.loc);
@@ -166,6 +169,11 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
         // as you specify a parent activity in AndroidManifest.xml.
 
         switch (item.getItemId()) {
+
+            case android.R.id.home:
+                finish();
+                break;
+
             case R.id.done:
                 File source = new File(Environment.getExternalStoragePublicDirectory("Evolve/temp"), "img_" + file_name + ".jpg");
                 File destination = new File(Environment.getExternalStoragePublicDirectory("Evolve/"), "img_" + file_name + ".jpg");
