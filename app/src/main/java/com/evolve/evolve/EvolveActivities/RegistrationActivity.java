@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolvePreferences;
 import com.evolve.evolve.R;
@@ -29,6 +30,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
         TutorialPagerAdapter adapter = new TutorialPagerAdapter(getSupportFragmentManager(), list);
         pager.setAdapter(adapter);
+
+        pager.setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
 
     private void instantiate() {

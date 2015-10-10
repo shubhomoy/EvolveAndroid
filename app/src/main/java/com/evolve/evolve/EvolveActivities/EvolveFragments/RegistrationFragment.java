@@ -1,10 +1,14 @@
 package com.evolve.evolve.EvolveActivities.EvolveFragments;
 
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +48,8 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
     EditText email;
     EditText mobile_num;
     EvolvePreferences prefs;
+    Toolbar toolbar;
+    AlertDialog.Builder dialog;
 
     public RegistrationFragment() {
         // Required empty public constructor
@@ -57,6 +63,10 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         View v=inflater.inflate(R.layout.fragment_registration, container, false);
         email=(EditText)v.findViewById(R.id.email);
         mobile_num=(EditText)v.findViewById(R.id.mobile);
+        toolbar = (Toolbar)v.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Register");
+        dialog = new AlertDialog.Builder(getActivity());
         return v;
     }
 
@@ -72,21 +82,21 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
 //This function verifies the otp.
 // If the otp is verified server sends an id and access token to the client.
     void showOtpDialog() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setTitle("Enter OTP");
+        dialog.setMessage(null);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.otp_custom_dialog, null);
         dialog.setView(view);
         final EditText otp=(EditText)view.findViewById(R.id.otp_et);
-        view.findViewById(R.id.otp_button).setOnClickListener(new View.OnClickListener() {
+        dialog.setCancelable(true);
+        dialog.setPositiveButton("Done", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
-
+            public void onClick(DialogInterface dialogInterface, int i) {
                 String url= Config.apiUrl+"/api/users/verify";
                 StringRequest stringRequest=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Log.d("option", response);
                             JSONObject jsonObject=new JSONObject(response);
                             Gson gson =new Gson();
                             User user=gson.fromJson(jsonObject.getString("data"),User.class);
@@ -101,8 +111,16 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("option", error.toString());
-                        Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_LONG).show();
+                        dialog.setView(null);
+                        dialog.setTitle("Failed");
+                        dialog.setMessage("Not a valid OTP");
+                        dialog.setPositiveButton("Dismiss", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        dialog.create().show();
                     }
                 }){
                     @Override
@@ -117,18 +135,22 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
                 VolleySingleton.getInstance().getRequestQueue().add(stringRequest);
             }
         });
-        dialog.setCancelable(false);
         dialog.create().show();
     }
 //Here the e-mail id and phone number is sent to the server and then a response comes
 //with a response of e-mail id, phone number and otp which is then initialised to the user class
     @Override
     public void onClick(View v) {
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Registering");
+        progressDialog.show();
+
         String url = Config.apiUrl+"/api/users/login";
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        progressDialog.dismiss();
                         try {
                             JSONObject responseObject = new JSONObject(response);
                             Gson gson = new Gson();
@@ -143,7 +165,8 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("option", error.toString());
+                        progressDialog.dismiss();
+                        Toast.makeText(getActivity(), "Connection Timeout", Toast.LENGTH_LONG).show();
                     }
                 }){
             @Override
@@ -155,7 +178,6 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
             }
         };
         VolleySingleton.getInstance().getRequestQueue().add(jsonObjectRequest);
-
     }
 
     }
