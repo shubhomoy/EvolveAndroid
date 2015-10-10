@@ -2,15 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
     android:orientation="vertical">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enter OTP"
-        android:textSize="20sp"
-        android:layout_gravity="center"/>
 
     <EditText
         android:id="@+id/otp_et"
@@ -19,16 +11,9 @@
         android:maxLength="5"
         android:hint="OTP"
         android:inputType="number"
-        android:textSize="15sp"
-        android:layout_marginTop="10dp"
-        android:padding="10dp"
+        android:textSize="20sp"
+        android:padding="20dp"
+        android:layout_margin="20dp"
         android:layout_gravity="center"/>
-
-    <Button
-        android:id="@+id/otp_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Submit"/>
 
 </LinearLayout>
