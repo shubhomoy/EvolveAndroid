@@ -1,6 +1,5 @@
 package com.evolve.evolve.EvolveActivities.EvolveAdapters;
 
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
@@ -34,11 +33,9 @@ import com.evolve.evolve.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.Inflater;
 
 /**
  * Created by vellapanti on 17/9/15.
@@ -93,32 +90,27 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         switch (i) {
                             case 0:
-                                File file = new File(Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(position));
-                                file.delete();
-                                filename.remove(i);
                                 try {
-                                    int exifInfoid = imageManipulator.readExifInfo(Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(i));
-                                    database.open();
-                                    database.deletePicInfo(exifInfoid);
-                                    database.close();
+                                    imageManipulator.deleteFromLocal(context, filename.get(position));
+                                    filename.remove(position);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 } finally {
                                     GalleryAdapter.this.notifyDataSetChanged();
                                     dialog.dismiss();
                                 }
-
                                 break;
 
                             case 1:
 
-                                String fileName=Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(position);
-                                ImageManipulator manipulator=new ImageManipulator();
+                                String fileName = Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(position);
+                                ImageManipulator manipulator = new ImageManipulator();
 
                                 try {
-                                    int exifInfo=manipulator.readExifInfo(fileName);
+                                    int exifInfo = manipulator.readExifInfo(fileName);
                                     deletePermanently(exifInfo);
-                                } catch (Exception e) {}
+                                } catch (Exception e) {
+                                }
                                 break;
                         }
                     }
@@ -143,17 +135,17 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         return filename.size();
     }
 
-    private void deletePermanently(final int exifInfo){
+    private void deletePermanently(final int exifInfo) {
 
-        String url= Config.apiUrl+"/api/delete/image";
-        final EvolvePreferences prefs=new EvolvePreferences(context);
+        String url = Config.apiUrl + "/api/delete/image";
+        final EvolvePreferences prefs = new EvolvePreferences(context);
 
-        StringRequest stringRequest=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    Log.d("JsonString",response.toString());
+                    Log.d("JsonString", response.toString());
                 } catch (JSONException e) {
 
                 }
@@ -161,13 +153,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context,"Something went wrong",Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Something went wrong", Toast.LENGTH_LONG).show();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map params=new HashMap();
-                params.put("id",exifInfo);
+                Map params = new HashMap();
+                params.put("id", String.valueOf(exifInfo));
                 return params;
             }
 
