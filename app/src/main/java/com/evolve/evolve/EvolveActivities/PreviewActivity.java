@@ -72,6 +72,8 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
     private final int NAVIGATION_TAG = 1;
     private String img_date;
     public  EvolveDatabase database;
+
+
     private void instantiate() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

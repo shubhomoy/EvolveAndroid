@@ -134,7 +134,7 @@ public class GalleryFragment extends Fragment {
                     if(!dir.exists())
                         dir.mkdir();
                     String [] files = dir.list();
-                    ImageManipulator manipulator = new ImageManipulator();
+                    final ImageManipulator manipulator = new ImageManipulator();
 
                     for(int i=0; i<arr.length(); i++) {
                         final Image image = gson.fromJson(arr.getJSONObject(i).toString(), Image.class);
@@ -163,9 +163,12 @@ public class GalleryFragment extends Fragment {
                                     try {
                                         fout = new FileOutputStream(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+image.id+".jpg");
                                         response.compress(Bitmap.CompressFormat.JPEG, 100, fout);
+                                        manipulator.writeExifInfo(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+image.id+".jpg" ,image.id);
                                     } catch (FileNotFoundException e) {
 
-                                    }finally {
+                                    } catch (IOException e) {
+
+                                    } finally {
                                         try {
                                             fout.close();
                                         } catch (IOException e) {

@@ -52,6 +52,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     ImageManipulator imageManipulator;
     EvolveDatabase database;
     AlertDialog dialog;
+    EvolvePreferences prefs;
 
     public GalleryAdapter(Context context, ArrayList<String> file_name) {
         this.context = context;
@@ -61,6 +62,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         imageManipulator = new ImageManipulator();
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         width = wm.getDefaultDisplay().getWidth() / 3;
+        prefs = new EvolvePreferences(context);
     }
 
     @Override
@@ -95,7 +97,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                             case 0:
                                 File file = new File(Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(position));
                                 file.delete();
-                                filename.remove(i);
+                                filename.remove(position);
                                 try {
                                     int exifInfoid = imageManipulator.readExifInfo(Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(i));
                                     database.open();
@@ -113,12 +115,15 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                             case 1:
 
                                 String fileName=Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(position);
+                                Log.d("option", fileName);
                                 ImageManipulator manipulator=new ImageManipulator();
-
                                 try {
                                     int exifInfo=manipulator.readExifInfo(fileName);
-                                    deletePermanently(exifInfo);
-                                } catch (Exception e) {}
+                                    Log.d("option", ""+exifInfo);
+                                    deletePermanently(exifInfo, position);
+                                } catch (Exception e) {
+                                    Log.d("option", "err");
+                                }
                                 break;
                         }
                     }
@@ -143,10 +148,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         return filename.size();
     }
 
-    private void deletePermanently(final int exifInfo){
+    private void deletePermanently(final int exifInfo, int position){
 
         String url= Config.apiUrl+"/api/delete/image";
-        final EvolvePreferences prefs=new EvolvePreferences(context);
 
         StringRequest stringRequest=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -161,13 +165,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context,"Something went wrong",Toast.LENGTH_LONG).show();
+                Toast.makeText(context,error.toString(),Toast.LENGTH_LONG).show();
             }
         }){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map params=new HashMap();
-                params.put("id",exifInfo);
+                params.put("id", String.valueOf(exifInfo));
                 return params;
             }
 
