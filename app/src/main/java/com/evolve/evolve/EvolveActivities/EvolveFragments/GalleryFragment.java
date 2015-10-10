@@ -1,10 +1,12 @@
 package com.evolve.evolve.EvolveActivities.EvolveFragments;
 
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,6 +26,7 @@ import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolvePreferences;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveRequest;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.ImageManipulator;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.VolleySingleton;
+import com.evolve.evolve.EvolveActivities.MainActivity;
 import com.evolve.evolve.R;
 
 import java.io.File;
@@ -105,6 +108,13 @@ public class GalleryFragment extends Fragment {
         recyclerView_images.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         refreshGallery();
         fetchFromServer();
+
+        recyclerView_images.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).fabMenu.collapse();
+            }
+        });
         return v;
     }
 

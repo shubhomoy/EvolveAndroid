@@ -39,17 +39,19 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     ViewPager pager;
     FloatingActionButton uploadBtn, cameraBtn;
-    FloatingActionsMenu fabMenu;
+    public FloatingActionsMenu fabMenu;
     ArrayList<Fragment> pageList;
     MainpagePagerAdapter adapter;
     File image_file;
     String timeStamp;
     GalleryFragment galleryFragment;
+    EvolveDatabase evolveDatabase;
+    EvolvePreferences prefs;
+
+
     int CAMERA_CAPTURE_TAG = 0;
     int PREVIEW_TAG = 1;
     int RESULT_LOAD_IMG=2;
-    EvolveDatabase evolveDatabase;
-    EvolvePreferences prefs;
 
     private void instantiate() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -63,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         cameraBtn = (FloatingActionButton) findViewById(R.id.action_b);
         evolveDatabase=new EvolveDatabase(this);
         prefs = new EvolvePreferences(this);
+        adapter = new MainpagePagerAdapter(getSupportFragmentManager(), pageList);
     }
 
     @Override
@@ -71,14 +74,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         instantiate();
 
-
-        adapter = new MainpagePagerAdapter(getSupportFragmentManager(), pageList);
         pager.setAdapter(adapter);
 
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent upload_pic=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                fabMenu.collapse();
                 startActivityForResult(upload_pic, RESULT_LOAD_IMG);
             }
         });
@@ -100,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 Uri uri = Uri.fromFile(image_file);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+                fabMenu.collapse();
                 startActivityForResult(intent, CAMERA_CAPTURE_TAG);
             }
         });

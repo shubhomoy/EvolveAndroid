@@ -1,7 +1,6 @@
 package com.evolve.evolve.EvolveActivities.EvolveAdapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
@@ -24,7 +23,6 @@ import com.evolve.evolve.R;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 /**
  * Created by vellapanti on 17/9/15.

@@ -1,8 +1,6 @@
 package com.evolve.evolve.EvolveActivities.EvolveUtilities;
 
 import android.media.ExifInterface;
-import android.os.Environment;
-import android.util.Log;
 
 import java.io.IOException;
 
