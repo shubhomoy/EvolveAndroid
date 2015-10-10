@@ -12,9 +12,10 @@ import java.util.ArrayList;
 public class MainpagePagerAdapter extends FragmentStatePagerAdapter {
 
     ArrayList<Fragment> list;
+
     public MainpagePagerAdapter(FragmentManager fm, ArrayList<Fragment> list) {
         super(fm);
-        this.list=list;
+        this.list = list;
     }
 
     @Override

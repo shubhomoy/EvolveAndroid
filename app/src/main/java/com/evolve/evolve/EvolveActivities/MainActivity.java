@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
         imageList = new ArrayList<Image>();
         galleryFragment = new GalleryFragment();
         pageList.add(galleryFragment);
-        pageList.add(new QuickListFragment());
         fabMenu = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
         uploadBtn = (FloatingActionButton) findViewById(R.id.action_a);
         cameraBtn = (FloatingActionButton) findViewById(R.id.action_b);
@@ -98,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         fetchFromServer();
         instantiate();
 
+
         adapter = new MainpagePagerAdapter(getSupportFragmentManager(), pageList);
         pager.setAdapter(adapter);
 
@@ -105,8 +105,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent upload_pic=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(upload_pic,RESULT_LOAD_IMG);
-
+                startActivityForResult(upload_pic, RESULT_LOAD_IMG);
             }
         });
 
@@ -114,31 +113,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 camera_process();
-            }
-        });
-
-        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                switch (position) {
-                    case 0:
-                        fabMenu.setVisibility(View.VISIBLE);
-                        break;
-                    case 1:
-                        fabMenu.setVisibility(View.GONE);
-                        break;
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
             }
         });
 
@@ -213,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     adapter.notifyDataSetChanged();
+                    galleryFragment.refreshGallery();
                 } catch (JSONException e) {
 
                 }
@@ -221,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("option", error.toString());
+                galleryFragment.refreshGallery();
             }
         }, this);
         VolleySingleton.getInstance().getRequestQueue().add(evolveRequest);
@@ -305,8 +280,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.search)
-            Toast.makeText(this, "Yet to come", Toast.LENGTH_SHORT).show();
+        if (item.getItemId() == R.id.exit)
+            finish();
         return super.onOptionsItemSelected(item);
     }
 }
