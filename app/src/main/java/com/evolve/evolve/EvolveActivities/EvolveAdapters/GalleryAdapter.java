@@ -1,11 +1,13 @@
 package com.evolve.evolve.EvolveActivities.EvolveAdapters;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +18,27 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.Config;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveDatabase;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolvePreferences;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.ImageManipulator;
+import com.evolve.evolve.EvolveActivities.EvolveUtilities.VolleySingleton;
 import com.evolve.evolve.EvolveActivities.ImagePreviewActivity;
 import com.evolve.evolve.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.Inflater;
 
 /**
@@ -58,8 +73,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     }
 
     @Override
-    public void onBindViewHolder(final GalleryAdapter.GalleryViewHolder viewHolder, final int i) {
-        Glide.with(context).load(Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(i)).into(viewHolder.images);
+    public void onBindViewHolder(final GalleryAdapter.GalleryViewHolder viewHolder, final int position) {
+        Glide.with(context).load(Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(position)).into(viewHolder.images);
         viewHolder.images.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -79,7 +94,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         switch (i) {
                             case 0:
-                                File file = new File(Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(i));
+                                File file = new File(Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(position));
                                 file.delete();
                                 filename.remove(i);
                                 try {
@@ -97,7 +112,14 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                                 break;
 
                             case 1:
-                                Toast.makeText(context, "Position " + i, Toast.LENGTH_LONG).show();
+
+                                String fileName=Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(position);
+                                ImageManipulator manipulator=new ImageManipulator();
+
+                                try {
+                                    int exifInfo=manipulator.readExifInfo(fileName);
+                                    deletePermanently(exifInfo);
+                                } catch (Exception e) {}
                                 break;
                         }
                     }
@@ -111,7 +133,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, ImagePreviewActivity.class);
-                intent.putExtra("filename", filename.get(i));
+                intent.putExtra("filename", filename.get(position));
                 context.startActivity(intent);
             }
         });
@@ -120,6 +142,46 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     @Override
     public int getItemCount() {
         return filename.size();
+    }
+
+    private void deletePermanently(final int exifInfo){
+
+        String url= Config.apiUrl+"/api/delete/image";
+        final EvolvePreferences prefs=new EvolvePreferences(context);
+
+        StringRequest stringRequest=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Log.d("JsonString",response.toString());
+                } catch (JSONException e) {
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context,"Something went wrong",Toast.LENGTH_LONG).show();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map params=new HashMap();
+                params.put("id",exifInfo);
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new HashMap<String, String>();
+                header.put("id", String.valueOf(prefs.getId()));
+                header.put("access_token", prefs.getAccessToken());
+                return header;
+            }
+        };
+        VolleySingleton.getInstance().getRequestQueue().add(stringRequest);
+
     }
 
     class GalleryViewHolder extends RecyclerView.ViewHolder {
