@@ -24,7 +24,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.volley.toolbox.StringRequest;
 import com.evolve.evolve.EvolveActivities.EvolveObjects.Image;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.Config;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveDatabase;
@@ -53,7 +52,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 
 public class PreviewActivity extends AppCompatActivity implements LocationListener {
 
@@ -61,8 +59,8 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
     private ImageView previewImageView;
     private String file_name;
     private Intent mainIntent;
-    private double latitude;
-    private double longitude;
+    private double latitude=0;
+    private double longitude=0;
     protected LocationManager locationManager;
     public Location location;
     CheckBox checkBox;
@@ -71,7 +69,8 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
     private EditText description;
     private final int NAVIGATION_TAG = 1;
     private String img_date;
-    public  EvolveDatabase database;
+    public EvolveDatabase database;
+
     private void instantiate() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -83,10 +82,11 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
         checkBox = (CheckBox) findViewById(R.id.loc);
         prefs = new EvolvePreferences(this);
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-        description=(EditText)findViewById(R.id.des);
-        database=new EvolveDatabase(this);
+        description = (EditText) findViewById(R.id.des);
+        database = new EvolveDatabase(this);
     }
-// This function is called when the user chooses to
+
+    // This function is called when the user chooses to
 // share his location and then his latitude and longitude is captured
     void shareLocation(final String provider) {
         if (provider.equals("network")) {
@@ -175,15 +175,62 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
                 break;
 
             case R.id.done:
-                File source = new File(Environment.getExternalStoragePublicDirectory("Evolve/temp"), "img_" + file_name + ".jpg");
+
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                dialog.setTitle("Upload");
+                dialog.setMessage("Where to upload the picture?");
+                dialog.setPositiveButton("Server", new
+                        DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                File source = new File(Environment.getExternalStoragePublicDirectory("Evolve/temp"), "img_" + file_name + ".jpg");
+                                File destination = new File(Environment.getExternalStoragePublicDirectory("Evolve/"), "img_" + file_name + ".jpg");
+                                source.renameTo(destination);
+                                img_date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                                new UploadPictureHttp(description.getText().toString(), img_date, file_name, String.valueOf(longitude), String.valueOf(latitude)).execute(Environment.getExternalStorageDirectory().toString() + "/Evolve/img_" + file_name + ".jpg");
+                                setResult(RESULT_OK);
+                                finish();
+                            }
+                        });
+
+                dialog.setNegativeButton("Local Storage", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        File source = new File(Environment.getExternalStoragePublicDirectory("Evolve/temp"), "img_" + file_name + ".jpg");
+                        File destination = new File(Environment.getExternalStoragePublicDirectory("Evolve/"), "img_" + file_name + ".jpg");
+                        source.renameTo(destination);
+
+                        Image image = new Image();
+                        image.id = 0;
+                        image.description = description.getText().toString();
+                        image.name = "img_" + file_name + ".jpg";
+                        image.photo_date=file_name;
+                        image.lat= String.valueOf(latitude);
+                        image.lon=String.valueOf(longitude);
+
+                        EvolveDatabase database=new EvolveDatabase(PreviewActivity.this);
+                        database.open();
+                        database.insertInformation(image);
+                        database.close();
+                        setResult(RESULT_OK);
+                        finish();
+                    }
+                });
+
+                dialog.create().show();
+                break;
+
+
+
+
+                /*File source = new File(Environment.getExternalStoragePublicDirectory("Evolve/temp"), "img_" + file_name + ".jpg");
                 File destination = new File(Environment.getExternalStoragePublicDirectory("Evolve/"), "img_" + file_name + ".jpg");
                 source.renameTo(destination);
                 img_date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                new UploadPictureHttp(description.getText().toString(),img_date,file_name,String.valueOf(longitude),String.valueOf(latitude)).execute(Environment.getExternalStorageDirectory().toString()+"/Evolve/img_" + file_name + ".jpg");
+                new UploadPictureHttp(description.getText().toString(), img_date, file_name, String.valueOf(longitude), String.valueOf(latitude)).execute(Environment.getExternalStorageDirectory().toString() + "/Evolve/img_" + file_name + ".jpg");
 
                 setResult(RESULT_OK);
                 finish();
-                break;
+                break;*/
         }
 
         return super.onOptionsItemSelected(item);
@@ -231,20 +278,22 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
 
     }
 
-//This class is responsible for the uploading of the pic to the server.
+    //This class is responsible for the uploading of the pic to the server.
     private class UploadPictureHttp extends AsyncTask<String, String, String> {
         String desc;
         String date;
         String name;
         String lon;
         String lat;
-        public UploadPictureHttp(String desc,String date,String name,String lon ,String lat){
-            this.desc=desc;
-            this.date=date;
-            this.name=name;
-            this.lon=lon;
-            this.lat=lat;
+
+        public UploadPictureHttp(String desc, String date, String name, String lon, String lat) {
+            this.desc = desc;
+            this.date = date;
+            this.name = name;
+            this.lon = lon;
+            this.lat = lat;
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -292,7 +341,7 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
                     Image image = gson.fromJson(jsonObject.getString("data"), Image.class);
                     ImageManipulator manipulator = new ImageManipulator();
                     try {
-                        manipulator.writeExifInfo(Environment.getExternalStorageDirectory().toString()+"/Evolve/img_" + file_name + ".jpg", image.id);
+                        manipulator.writeExifInfo(Environment.getExternalStorageDirectory().toString() + "/Evolve/img_" + file_name + ".jpg", image.id);
                         database.open();
                         database.insertInformation(image);
                         database.close();
