@@ -50,6 +50,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     EvolveDatabase database;
     AlertDialog dialog;
     EvolvePreferences prefs;
+    int exifInfo;
 
     public GalleryAdapter(Context context, ArrayList<String> file_name) {
         this.context = context;
@@ -83,19 +84,27 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                 builder.setView(row);
 
                 ListView deletelist = (ListView) row.findViewById(R.id.delete_list);
-                String[] delete_array = context.getResources().getStringArray(R.array.delete_list_array);
+                String[] delete_per = {"Delete Locally", "Delete Permanently"}, delete_temp = {"Delete"};
+                ArrayAdapter<String> deleteAdapter;
 
-                ArrayAdapter<String> deleteAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, delete_array);
+                final String fileName = Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(position);
+                try {
+                    exifInfo = imageManipulator.readExifInfo(fileName);
+                } catch (Exception e) {
+                }
+
+                if (exifInfo == 0)
+                    deleteAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, delete_temp);
+                else
+                    deleteAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, delete_per);
                 deletelist.setAdapter(deleteAdapter);
+
                 deletelist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        int exifInfo = 0;
-                        String fileName = Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(position);
                         switch (i) {
                             case 0:
                                 try {
-                                    exifInfo = imageManipulator.readExifInfo(fileName);
                                     imageManipulator.deleteFromLocal(context, fileName, exifInfo);
                                     filename.remove(position);
                                 } catch (Exception e) {
@@ -105,7 +114,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                                 break;
                             case 1:
                                 try {
-                                    exifInfo = imageManipulator.readExifInfo(fileName);
                                     deletePermanently(exifInfo, position, fileName);
                                     filename.remove(position);
                                     dialog.dismiss();
