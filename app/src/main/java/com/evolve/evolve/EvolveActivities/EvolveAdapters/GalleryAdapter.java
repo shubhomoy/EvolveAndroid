@@ -84,7 +84,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
                 ListView deletelist = (ListView) row.findViewById(R.id.delete_list);
                 String[] delete_array = context.getResources().getStringArray(R.array.delete_list_array);
-
                 ArrayAdapter<String> deleteAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, delete_array);
                 deletelist.setAdapter(deleteAdapter);
                 deletelist.setOnItemClickListener(new AdapterView.OnItemClickListener() {

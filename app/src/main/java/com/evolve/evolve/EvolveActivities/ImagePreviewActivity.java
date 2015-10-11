@@ -14,6 +14,8 @@ import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveDatabase;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.ImageManipulator;
 import com.evolve.evolve.R;
 
+import java.io.IOException;
+
 /**
  * Created by shubhomoy on 18/9/15.
  */
@@ -45,11 +47,14 @@ public class ImagePreviewActivity extends AppCompatActivity {
         Glide.with(this).load(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+filename).into(imageView);
         try {
             int id=imageManipulator.readExifInfo(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+filename);
+            database.open();
             image=database.getImage(id);
             Log.d("option", image.description);
             descriptionTv.setText(image.description);
-        } catch (Exception e) {
-            e.printStackTrace();
+            database.close();
+        }catch (IOException e) {
+            Log.d("option", "No image found");
+        }catch (Exception e) {
         }
     }
 }
