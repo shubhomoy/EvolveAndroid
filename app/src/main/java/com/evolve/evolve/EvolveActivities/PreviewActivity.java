@@ -175,7 +175,6 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
                 break;
 
             case R.id.done:
-
                 AlertDialog.Builder dialog = new AlertDialog.Builder(this);
                 dialog.setTitle("Upload");
                 dialog.setMessage("Where to upload the picture?");
@@ -191,46 +190,38 @@ public class PreviewActivity extends AppCompatActivity implements LocationListen
                                 finish();
                             }
                         });
-
                 dialog.setNegativeButton("Local Storage", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         File source = new File(Environment.getExternalStoragePublicDirectory("Evolve/temp"), "img_" + file_name + ".jpg");
                         File destination = new File(Environment.getExternalStoragePublicDirectory("Evolve/"), "img_" + file_name + ".jpg");
                         source.renameTo(destination);
+                        ImageManipulator imageManipulator = new ImageManipulator();
+                        try {
+                            imageManipulator.writeExifInfo(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Evolve/img_" + file_name + ".jpg", 0);
+                            Image image = new Image();
+                            image.id = 0;
+                            image.description = description.getText().toString();
+                            image.name = "img_" + file_name + ".jpg";
+                            image.photo_date=file_name;
+                            image.lat= String.valueOf(latitude);
+                            image.lon=String.valueOf(longitude);
 
-                        Image image = new Image();
-                        image.id = 0;
-                        image.description = description.getText().toString();
-                        image.name = "img_" + file_name + ".jpg";
-                        image.photo_date=file_name;
-                        image.lat= String.valueOf(latitude);
-                        image.lon=String.valueOf(longitude);
+                            EvolveDatabase database=new EvolveDatabase(PreviewActivity.this);
+                            database.open();
+                            database.insertInformation(image);
+                            database.close();
+                            setResult(RESULT_OK);
+                            finish();
+                        } catch (IOException e) {
 
-                        EvolveDatabase database=new EvolveDatabase(PreviewActivity.this);
-                        database.open();
-                        database.insertInformation(image);
-                        database.close();
-                        setResult(RESULT_OK);
-                        finish();
+                        }
+
                     }
                 });
 
                 dialog.create().show();
                 break;
-
-
-
-
-                /*File source = new File(Environment.getExternalStoragePublicDirectory("Evolve/temp"), "img_" + file_name + ".jpg");
-                File destination = new File(Environment.getExternalStoragePublicDirectory("Evolve/"), "img_" + file_name + ".jpg");
-                source.renameTo(destination);
-                img_date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                new UploadPictureHttp(description.getText().toString(), img_date, file_name, String.valueOf(longitude), String.valueOf(latitude)).execute(Environment.getExternalStorageDirectory().toString() + "/Evolve/img_" + file_name + ".jpg");
-
-                setResult(RESULT_OK);
-                finish();
-                break;*/
         }
 
         return super.onOptionsItemSelected(item);

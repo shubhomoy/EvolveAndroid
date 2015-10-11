@@ -184,9 +184,9 @@ public class GalleryFragment extends Fragment {
                             });
                             VolleySingleton.getInstance().getRequestQueue().add(imageRequest);
                         }
-                       // if(!evolveDatabase.checkExif(image)) {
+                        if(!evolveDatabase.checkExif(image)) {
                             evolveDatabase.insertInformation(image);
-                       // }
+                        }
                     }
                     galleryAdapter.notifyDataSetChanged();
                     refreshGallery();

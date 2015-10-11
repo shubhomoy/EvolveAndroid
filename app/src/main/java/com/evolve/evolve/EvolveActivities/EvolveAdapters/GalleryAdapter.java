@@ -84,6 +84,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                 builder.setView(row);
 
                 ListView deletelist = (ListView) row.findViewById(R.id.delete_list);
+
                 String[] delete_per = {"Delete Locally", "Delete Permanently"}, delete_temp = {"Delete"};
                 ArrayAdapter<String> deleteAdapter;
 
@@ -97,6 +98,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                     deleteAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, delete_temp);
                 else
                     deleteAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, delete_per);
+
                 deletelist.setAdapter(deleteAdapter);
 
                 deletelist.setOnItemClickListener(new AdapterView.OnItemClickListener() {

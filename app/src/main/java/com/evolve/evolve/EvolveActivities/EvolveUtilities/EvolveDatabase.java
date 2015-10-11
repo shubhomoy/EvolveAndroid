@@ -44,7 +44,7 @@ public class EvolveDatabase {
         cv.put(Picture_Latitude,image.lat);
         cv.put(Picture_Longitude,image.lon);
         cv.put(Image_ExifTag,image.id);
-
+        db.insert(Table_Name,null, cv);
     }
     public boolean checkExif(Image img){
         Cursor cursor= db.rawQuery("select * from "+ Table_Name + " where " + Image_ExifTag + "="+ img.id,null);
