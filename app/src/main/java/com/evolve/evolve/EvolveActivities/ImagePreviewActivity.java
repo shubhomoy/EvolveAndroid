@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,6 +46,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
         try {
             int id=imageManipulator.readExifInfo(Environment.getExternalStorageDirectory().toString()+"/Evolve/"+filename);
             image=database.getImage(id);
+            Log.d("option", image.description);
             descriptionTv.setText(image.description);
         } catch (Exception e) {
             e.printStackTrace();

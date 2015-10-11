@@ -98,10 +98,9 @@ public class MainActivity extends AppCompatActivity {
                 if (!temp.exists()) {
                     temp.mkdir();
                 }
-                image_file = new File(Environment.getExternalStoragePublicDirectory("Evolve/temp"), "img_" + timeStamp + ".jpg");
+                image_file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Evolve/temp/img_" + timeStamp + ".jpg");
                 Uri uri = Uri.fromFile(image_file);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
                 fabMenu.collapse();
                 startActivityForResult(intent, CAMERA_CAPTURE_TAG);
             }
@@ -117,8 +116,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent in = new Intent(MainActivity.this, PreviewActivity.class);
                 in.putExtra("file", timeStamp);
                 startActivityForResult(in, PREVIEW_TAG);
-            } else {
-                Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
             }
         }else if(requestCode == PREVIEW_TAG && resultCode == RESULT_OK) {
             galleryFragment.refreshGallery();

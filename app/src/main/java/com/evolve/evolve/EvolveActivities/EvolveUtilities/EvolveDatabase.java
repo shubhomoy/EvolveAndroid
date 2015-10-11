@@ -69,7 +69,6 @@ public class EvolveDatabase {
             image.photo_date=cursor.getString(cursor.getColumnIndex(Picture_Date));
             image.lat=cursor.getString(cursor.getColumnIndex(Picture_Latitude));
             image.lon=cursor.getString(cursor.getColumnIndex(Picture_Longitude));
-
             return image;
         }
     }
