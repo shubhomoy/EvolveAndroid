@@ -40,7 +40,7 @@ import java.util.Map;
 /**
  * Created by vellapanti on 17/9/15.
  */
-public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder> {
+public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private LayoutInflater inflater;
     private ArrayList<String> filename;
@@ -64,81 +64,103 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     }
 
     @Override
-    public GalleryAdapter.GalleryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-
-        View view = inflater.inflate(R.layout.custom_galleryview, viewGroup, false);
-        GalleryViewHolder galleryViewHolder = new GalleryViewHolder(view, width);
-        return galleryViewHolder;
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        View view;
+        switch (viewType) {
+            case 0:
+                view = inflater.inflate(R.layout.gallery_header, viewGroup, false);
+                GalleryHeaderViewHolder galleryHeaderViewHolder = new GalleryHeaderViewHolder(view);
+                return galleryHeaderViewHolder;
+            case 1:
+                view = inflater.inflate(R.layout.custom_galleryview, viewGroup, false);
+                GalleryViewHolder galleryViewHolder = new GalleryViewHolder(view, width);
+                return galleryViewHolder;
+        }
+        return null;
     }
 
     @Override
-    public void onBindViewHolder(final GalleryAdapter.GalleryViewHolder viewHolder, final int position) {
-        Glide.with(context).load(Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(position)).into(viewHolder.images);
-        viewHolder.images.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    public int getItemViewType(int position) {
+        if(position == 0)
+            return 0;
+        else
+            return 1;
+    }
 
-                LayoutInflater inflater = LayoutInflater.from(context);
-                View row = inflater.inflate(R.layout.delete_list_view, null);
-                builder.setView(row);
+    @Override
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        if(holder instanceof GalleryViewHolder) {
+            GalleryViewHolder viewHolder = (GalleryViewHolder)holder;
+            Glide.with(context).load(Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(position)).into(viewHolder.images);
+            viewHolder.images.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-                ListView deletelist = (ListView) row.findViewById(R.id.delete_list);
+                    LayoutInflater inflater = LayoutInflater.from(context);
+                    View row = inflater.inflate(R.layout.delete_list_view, null);
+                    builder.setView(row);
 
-                String[] delete_per = {"Delete Locally", "Delete Permanently"}, delete_temp = {"Delete"};
-                ArrayAdapter<String> deleteAdapter;
+                    ListView deletelist = (ListView) row.findViewById(R.id.delete_list);
 
-                final String fileName = Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(position);
-                try {
-                    exifInfo = imageManipulator.readExifInfo(fileName);
-                } catch (Exception e) {
-                }
+                    String[] delete_per = {"Delete Locally", "Delete Permanently"}, delete_temp = {"Delete"};
+                    ArrayAdapter<String> deleteAdapter;
 
-                if (exifInfo == 0)
-                    deleteAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, delete_temp);
-                else
-                    deleteAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, delete_per);
-
-                deletelist.setAdapter(deleteAdapter);
-
-                deletelist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        switch (i) {
-                            case 0:
-                                try {
-                                    imageManipulator.deleteFromLocal(context, fileName, exifInfo);
-                                    filename.remove(position);
-                                } catch (Exception e) {
-                                }
-                                GalleryAdapter.this.notifyDataSetChanged();
-                                dialog.dismiss();
-                                break;
-                            case 1:
-                                try {
-                                    deletePermanently(exifInfo, position, fileName);
-                                    filename.remove(position);
-                                    dialog.dismiss();
-                                    GalleryAdapter.this.notifyDataSetChanged();
-                                } catch (Exception e) {
-                                }
-                                break;
-                        }
+                    final String fileName = Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(position);
+                    try {
+                        exifInfo = imageManipulator.readExifInfo(fileName);
+                    } catch (Exception e) {
                     }
-                });
-                dialog = builder.create();
-                dialog.show();
-                return true;
-            }
-        });
-        viewHolder.images.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, ImagePreviewActivity.class);
-                intent.putExtra("filename", filename.get(position));
-                context.startActivity(intent);
-            }
-        });
+
+                    if (exifInfo == 0)
+                        deleteAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, delete_temp);
+                    else
+                        deleteAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, delete_per);
+
+                    deletelist.setAdapter(deleteAdapter);
+
+                    deletelist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            switch (i) {
+                                case 0:
+                                    try {
+                                        imageManipulator.deleteFromLocal(context, fileName, exifInfo);
+                                        filename.remove(position);
+                                    } catch (Exception e) {
+                                    }
+                                    GalleryAdapter.this.notifyDataSetChanged();
+                                    dialog.dismiss();
+                                    break;
+                                case 1:
+                                    try {
+                                        deletePermanently(exifInfo, position, fileName);
+                                        filename.remove(position);
+                                        dialog.dismiss();
+                                        GalleryAdapter.this.notifyDataSetChanged();
+                                    } catch (Exception e) {
+                                    }
+                                    break;
+                            }
+                        }
+                    });
+                    dialog = builder.create();
+                    dialog.show();
+                    return true;
+                }
+            });
+            viewHolder.images.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ImagePreviewActivity.class);
+                    intent.putExtra("filename", filename.get(position));
+                    context.startActivity(intent);
+                }
+            });
+        }else if(holder instanceof GalleryHeaderViewHolder) {
+            GalleryHeaderViewHolder viewHolder = (GalleryHeaderViewHolder)holder;
+
+        }
     }
 
     @Override
@@ -183,6 +205,16 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         };
         VolleySingleton.getInstance().getRequestQueue().add(stringRequest);
 
+    }
+
+    class GalleryHeaderViewHolder extends RecyclerView.ViewHolder{
+
+        ImageView rawImage;
+
+        public GalleryHeaderViewHolder(View itemView) {
+            super(itemView);
+            rawImage = (ImageView)itemView.findViewById(R.id.raw_image);
+        }
     }
 
     class GalleryViewHolder extends RecyclerView.ViewHolder {

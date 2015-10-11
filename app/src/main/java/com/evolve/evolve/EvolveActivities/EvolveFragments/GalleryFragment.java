@@ -105,7 +105,17 @@ public class GalleryFragment extends Fragment {
         emptyView= (TextView) v.findViewById(R.id.empty_recyclerview);
         recyclerView_images.setHasFixedSize(true);
         recyclerView_images.setAdapter(galleryAdapter);
-        recyclerView_images.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (position == 0)
+                    return 3;
+                else
+                    return 1;
+            }
+        });
+        recyclerView_images.setLayoutManager(gridLayoutManager);
         refreshGallery();
         fetchFromServer();
 
