@@ -10,5 +10,4 @@ public class User {
     public String created_at;
     public String updated_at;
     public String otp;
-    public String access_token;
 }

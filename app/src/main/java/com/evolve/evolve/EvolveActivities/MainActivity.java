@@ -13,10 +13,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.evolve.evolve.EvolveActivities.EvolveAdapters.MainpagePagerAdapter;
 import com.evolve.evolve.EvolveActivities.EvolveFragments.GalleryFragment;
+import com.evolve.evolve.EvolveActivities.EvolveFragments.QuickListFragment;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveDatabase;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolvePreferences;
 import com.evolve.evolve.R;
@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     File image_file;
     String timeStamp;
     GalleryFragment galleryFragment;
+    QuickListFragment quickListFragment;
     EvolveDatabase evolveDatabase;
     EvolvePreferences prefs;
 
@@ -59,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
         pager = (ViewPager) findViewById(R.id.view_pager);
         pageList = new ArrayList<>();
         galleryFragment = new GalleryFragment();
+        quickListFragment=new QuickListFragment();
         pageList.add(galleryFragment);
+        pageList.add(quickListFragment);
         fabMenu = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
         uploadBtn = (FloatingActionButton) findViewById(R.id.action_a);
         cameraBtn = (FloatingActionButton) findViewById(R.id.action_b);
