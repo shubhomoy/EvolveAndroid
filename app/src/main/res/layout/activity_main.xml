@@ -56,8 +56,6 @@
                 fab:fab_title="Take Picture" />
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
-
-
     </RelativeLayout>
 
 

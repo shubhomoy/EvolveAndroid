@@ -1,12 +1,14 @@
 package com.evolve.evolve.EvolveActivities.EvolveAdapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.evolve.evolve.EvolveActivities.DoctorSearchActivity;
 import com.evolve.evolve.R;
 
 /**
@@ -35,7 +37,8 @@ public class QuickListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         viewHolder.quicklist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent= new Intent(context, DoctorSearchActivity.class);
+                context.startActivity(intent);
             }
         });
     }

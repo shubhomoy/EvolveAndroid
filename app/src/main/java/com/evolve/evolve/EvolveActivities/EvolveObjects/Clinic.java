@@ -1,9 +1,11 @@
 package com.evolve.evolve.EvolveActivities.EvolveObjects;
 
+import java.util.ArrayList;
+
 /**
  * Created by vellapanti on 4/12/15.
  */
-public class Clinics {
+public class Clinic {
     public int id;
     public String name;
     public float x_coord;
@@ -12,7 +14,10 @@ public class Clinics {
     public String email;
     public String description;
     public String photo;
-    public String created_at;
-    public String updated_at;
+    public ArrayList<Doctor> doctors;
+    public ArrayList<Facility> facilities;
 
+    public class Facility {
+        public String facility;
+    }
 }
