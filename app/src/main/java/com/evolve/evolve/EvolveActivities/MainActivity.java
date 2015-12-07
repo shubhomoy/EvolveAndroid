@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == CAMERA_CAPTURE_TAG && resultCode == RESULT_OK) {
-            if (image_file.exists()) {
+            if (image_file!= null && image_file.exists()) {
                 Intent in = new Intent(MainActivity.this, PreviewActivity.class);
                 in.putExtra("file", timeStamp);
                 startActivityForResult(in, PREVIEW_TAG);
