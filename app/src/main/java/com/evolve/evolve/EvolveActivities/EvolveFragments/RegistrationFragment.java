@@ -41,7 +41,7 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RegistrationFragment extends Fragment implements View.OnClickListener{
+public class RegistrationFragment extends Fragment implements View.OnClickListener {
 
 
     Button getstarted;
@@ -60,12 +60,12 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        View v=inflater.inflate(R.layout.fragment_registration, container, false);
-        email=(EditText)v.findViewById(R.id.email);
-        mobile_num=(EditText)v.findViewById(R.id.mobile);
-        toolbar = (Toolbar)v.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Register");
+        View v = inflater.inflate(R.layout.fragment_registration, container, false);
+        email = (EditText) v.findViewById(R.id.email);
+        mobile_num = (EditText) v.findViewById(R.id.mobile);
+        toolbar = (Toolbar) v.findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Register");
         dialog = new AlertDialog.Builder(getActivity());
         return v;
     }
@@ -74,12 +74,13 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getstarted= (Button) getActivity().findViewById(R.id.submit);
+        getstarted = (Button) getActivity().findViewById(R.id.submit);
         getstarted.setOnClickListener(this);
         prefs = new EvolvePreferences(getActivity());
 
     }
-//This function verifies the otp.
+
+    //This function verifies the otp.
 // If the otp is verified server sends an id and access token to the client.
     void showOtpDialog() {
         dialog.setTitle("Enter OTP");
@@ -87,21 +88,21 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.otp_custom_dialog, null);
         dialog.setView(view);
-        final EditText otp=(EditText)view.findViewById(R.id.otp_et);
+        final EditText otp = (EditText) view.findViewById(R.id.otp_et);
         dialog.setCancelable(true);
         dialog.setPositiveButton("Done", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                String url= Config.apiUrl+"/api/users/verify";
-                StringRequest stringRequest=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                String url = Config.coreUrl + "/auth/verify";
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            JSONObject jsonObject=new JSONObject(response);
-                            Gson gson =new Gson();
-                            User user=gson.fromJson(jsonObject.getString("data"),User.class);
+                            JSONObject jsonObject = new JSONObject(response);
+                            Gson gson = new Gson();
+                            User user = gson.fromJson(jsonObject.getString("user"), User.class);
                             prefs.setId(user.id);
-                            prefs.setAccessToken(user.access_token);
+                            prefs.setAccessToken(jsonObject.getString("token"));
                             startActivity(new Intent(getActivity(), MainActivity.class));
                             getActivity().finish();
                         } catch (JSONException e) {
@@ -122,13 +123,13 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
                         });
                         dialog.create().show();
                     }
-                }){
+                }) {
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
-                        Map<String,String> params=new HashMap<String, String>();
-                        params.put("email",email.getText().toString());
-                        params.put("phone",mobile_num.getText().toString());
-                        params.put("otp",otp.getText().toString());
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put("email", email.getText().toString());
+                        params.put("phone", mobile_num.getText().toString());
+                        params.put("otp", otp.getText().toString());
                         return params;
                     }
                 };
@@ -137,7 +138,8 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         });
         dialog.create().show();
     }
-//Here the e-mail id and phone number is sent to the server and then a response comes
+
+    //Here the e-mail id and phone number is sent to the server and then a response comes
 //with a response of e-mail id, phone number and otp which is then initialised to the user class
     @Override
     public void onClick(View v) {
@@ -145,11 +147,13 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         progressDialog.setMessage("Registering");
         progressDialog.show();
 
-        String url = Config.apiUrl+"/api/users/login";
+        String url = Config.coreUrl + "/auth/login";
+        Log.d("option", url);
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Log.d("option", response);
                         progressDialog.dismiss();
                         try {
                             JSONObject responseObject = new JSONObject(response);
@@ -158,6 +162,8 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
                             Log.d("option", user.otp);
                             showOtpDialog();
                         } catch (JSONException e) {
+                            Log.d("option", e.toString());
+
                             Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_LONG).show();
                         }
                     }
@@ -168,7 +174,7 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
                         progressDialog.dismiss();
                         Toast.makeText(getActivity(), "Connection Timeout", Toast.LENGTH_LONG).show();
                     }
-                }){
+                }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map params = new HashMap();
@@ -180,5 +186,5 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         VolleySingleton.getInstance().getRequestQueue().add(jsonObjectRequest);
     }
 
-    }
+}
 

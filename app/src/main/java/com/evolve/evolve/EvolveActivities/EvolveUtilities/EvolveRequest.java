@@ -1,6 +1,7 @@
 package com.evolve.evolve.EvolveActivities.EvolveUtilities;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -18,7 +19,7 @@ public class EvolveRequest extends JsonObjectRequest {
 
     EvolvePreferences prefs;
 
-    public EvolveRequest(int method, String url, JSONObject jsonRequest, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener, Context context) {
+    public EvolveRequest(int method, String url, JSONObject jsonRequest, Response.Listener<JSONObject> listener,Response.ErrorListener errorListener,Context context) {
         super(method, url, jsonRequest, listener, errorListener);
         prefs = new EvolvePreferences(context);
     }
@@ -27,7 +28,9 @@ public class EvolveRequest extends JsonObjectRequest {
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String, String> header = new HashMap<String, String>();
         header.put("id", String.valueOf(prefs.getId()));
-        header.put("access_token", prefs.getAccessToken());
+        //Log.d("option_id", String.valueOf(prefs.getId()));
+        header.put("accessToken", prefs.getAccessToken());
+        //Log.d("option_id", String.valueOf(prefs.getAccessToken()));
         return header;
     }
 }

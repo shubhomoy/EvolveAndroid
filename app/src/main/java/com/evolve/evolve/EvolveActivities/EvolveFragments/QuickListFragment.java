@@ -3,27 +3,39 @@ package com.evolve.evolve.EvolveActivities.EvolveFragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.evolve.evolve.EvolveActivities.EvolveAdapters.QuickListAdapter;
 import com.evolve.evolve.R;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class QuickListFragment extends Fragment {
-
-
+    RecyclerView recyclerView_quicklist;
+    QuickListAdapter quickListAdapter;
     public QuickListFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        quickListAdapter=new QuickListAdapter(getActivity());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_quick_list, container, false);
+        View v= inflater.inflate(R.layout.fragment_quick_list,container,false);
+        recyclerView_quicklist=(RecyclerView)v.findViewById(R.id.recview_quicklist);
+        recyclerView_quicklist.setAdapter(quickListAdapter);
+        recyclerView_quicklist.setLayoutManager(new LinearLayoutManager(getActivity()));
+        return v;
     }
 
 
