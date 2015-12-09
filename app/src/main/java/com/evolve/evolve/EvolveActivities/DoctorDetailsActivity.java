@@ -94,10 +94,10 @@ public class DoctorDetailsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-//                Intent intent = new Intent(DoctorDetailsActivity.this, ClinicDetailsActivity.class)
-//                        .putExtra("docId", doctorId)
-//                        .putExtra("clinicId", clinics.get(position).id);
-//                startActivity(intent);
+                Intent intent = new Intent(DoctorDetailsActivity.this, ClinicDetailsActivity.class)
+                        .putExtra("docId", doctorId)
+                        .putExtra("clinicId", clinics.get(position).id);
+                startActivity(intent);
             }
         });
 
