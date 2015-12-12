@@ -34,8 +34,9 @@
             android:name=".EvolveActivities.ImagePreviewActivity"
             android:label="@string/title_activity_preview" />
         <activity android:name=".EvolveActivities.DoctorSearchActivity" />
-        <activity android:name=".EvolveActivities.DoctorDetailsActivity"></activity>
-        <activity android:name=".EvolveActivities.ClinicDetailsActivity"></activity>
+        <activity android:name=".EvolveActivities.DoctorDetailsActivity"/>
+        <activity android:name=".EvolveActivities.ClinicDetailsActivity"/>
+        <activity android:name=".EvolveActivities.MakeAppointment"/>
     </application>
 
 </manifest>
