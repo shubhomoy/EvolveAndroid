@@ -36,7 +36,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void instantiate() {
         pager = (ViewPager) findViewById(R.id.view_pager);
-        list = new ArrayList<Fragment>();
+        list = new ArrayList<>();
         for (int i = 0; i < 3; i++)
             list.add(new Tutorialfragment());
         list.add(new RegistrationFragment());

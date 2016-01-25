@@ -2,6 +2,7 @@ package com.evolve.evolve.EvolveActivities.EvolveFragments;
 
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,6 +39,7 @@ public class QuickListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View v= inflater.inflate(R.layout.fragment_quick_list,container,false);
         recyclerView_quicklist=(RecyclerView)v.findViewById(R.id.recview_quicklist);
         recyclerView_quicklist.setAdapter(quickListAdapter);

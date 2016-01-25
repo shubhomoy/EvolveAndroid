@@ -26,7 +26,7 @@
         </activity>
         <activity
             android:name=".EvolveActivities.RegistrationActivity"
-            android:label="@string/title_activity_registration"></activity>
+            android:label="@string/title_activity_registration" />
         <activity
             android:name=".EvolveActivities.PreviewActivity"
             android:label="@string/title_activity_preview" />
@@ -37,7 +37,8 @@
         <activity android:name=".EvolveActivities.DoctorDetailsActivity" />
         <activity android:name=".EvolveActivities.ClinicDetailsActivity" />
         <activity android:name=".EvolveActivities.MakeAppointment" />
-        <activity android:name=".EvolveActivities.SchoolSearchActivity"></activity>
+        <activity android:name=".EvolveActivities.SchoolSearchActivity" />
+        <activity android:name=".EvolveActivities.SchoolDetailsActivity"></activity>
     </application>
 
 </manifest>

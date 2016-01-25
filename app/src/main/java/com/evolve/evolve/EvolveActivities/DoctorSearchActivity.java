@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -120,6 +121,7 @@ public class DoctorSearchActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("option", error.toString());
+                Toast.makeText(DoctorSearchActivity.this,"Connection timed out",Toast.LENGTH_LONG).show();
             }
         },DoctorSearchActivity.this);
         VolleySingleton.getInstance().getRequestQueue().add(request);
