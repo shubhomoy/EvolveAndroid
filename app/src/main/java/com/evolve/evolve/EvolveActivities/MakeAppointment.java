@@ -1,6 +1,7 @@
 package com.evolve.evolve.EvolveActivities;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -44,6 +45,7 @@ public class MakeAppointment extends AppCompatActivity {
     int year, month, day;
     int docId, clinicId;
 
+    private ProgressDialog progressDialog;
     private DatePickerDialog.OnDateSetListener pickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int selectedYear,
@@ -166,6 +168,9 @@ public class MakeAppointment extends AppCompatActivity {
                 break;
             case R.id.done:
                 if(checkInput()) {
+                    progressDialog = new ProgressDialog(this);
+                    progressDialog.setMessage("Loading...");
+                    progressDialog.show();
                     String url = Config.apiUrl+"/appointment";
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                         @Override
@@ -181,7 +186,7 @@ public class MakeAppointment extends AppCompatActivity {
                                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        if(otpEt.getText().toString().trim().length() > 0) {
+                                        if (otpEt.getText().toString().trim().length() > 0) {
                                             verifyAppointment(otpEt.getText().toString());
                                         }
                                     }
@@ -192,14 +197,17 @@ public class MakeAppointment extends AppCompatActivity {
                                         dialogInterface.dismiss();
                                     }
                                 });
+                                progressDialog.cancel();
                                 builder.create().show();
                             } catch (JSONException e) {
+                                progressDialog.cancel();
                                 e.printStackTrace();
                             }
                         }
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+                            progressDialog.cancel();
                             Log.d("option", error.toString());
                         }
                     }){

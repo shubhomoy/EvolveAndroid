@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.evolve.evolve.EvolveActivities.DoctorSearchActivity;
-import com.evolve.evolve.EvolveActivities.SchoolSearchActivity;
+import com.evolve.evolve.EvolveActivities.SchoolFilterActivity;
 import com.evolve.evolve.R;
 
 import java.util.ArrayList;
@@ -44,13 +44,13 @@ public class QuickListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         viewHolder.quicklist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (position){
+                switch (position) {
                     case 0:
                         Intent doctorIntent = new Intent(context, DoctorSearchActivity.class);
                         context.startActivity(doctorIntent);
                         break;
                     case 1:
-                        Intent schoolIntent = new Intent(context, SchoolSearchActivity.class);
+                        Intent schoolIntent = new Intent(context, SchoolFilterActivity.class);
                         context.startActivity(schoolIntent);
                         break;
                 }

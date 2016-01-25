@@ -1,7 +1,7 @@
 package com.evolve.evolve.EvolveActivities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.evolve.evolve.EvolveActivities.EvolveAdapters.DoctorSearchAdapter;
 import com.evolve.evolve.EvolveActivities.EvolveObjects.Doctor;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.Config;
@@ -54,24 +53,22 @@ public class DoctorSearchActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                Log.d("Options_", s.toString());
                 if (s.toString().isEmpty()) {
                     emptyImage.setVisibility(View.VISIBLE);
                     emptyText.setVisibility(View.VISIBLE);
                     emptyText.setText("Search any Doctor,\nClinic or Specialization");
                     doctors_name.removeAll(doctors_name);
                     doctors_name.clear();
-
                 } else {
                     emptyImage.setVisibility(View.GONE);
                     emptyText.setVisibility(View.GONE);
                     fetchDoctorNames(s);
                 }
-
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(final Editable s) {
             }
         });
 
@@ -93,13 +90,14 @@ public class DoctorSearchActivity extends AppCompatActivity {
     }
 
     public void fetchDoctorNames(CharSequence sequence) {
-        doctors_name.removeAll(doctors_name);
-        doctors_name.clear();
+
         String url = Config.apiUrl + "/search/doctors?q=" + sequence.toString();
         EvolveRequest request = new EvolveRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    doctors_name.removeAll(doctors_name);
+                    doctors_name.clear();
                     JSONArray array = new JSONArray(response.getString("data"));
                     Gson gson = new Gson();
                     for (int i = 0; i < array.length(); i++) {
@@ -123,7 +121,7 @@ public class DoctorSearchActivity extends AppCompatActivity {
                 Log.d("option", error.toString());
                 Toast.makeText(DoctorSearchActivity.this,"Connection timed out",Toast.LENGTH_LONG).show();
             }
-        },DoctorSearchActivity.this);
+        }, DoctorSearchActivity.this);
         VolleySingleton.getInstance().getRequestQueue().add(request);
     }
 }

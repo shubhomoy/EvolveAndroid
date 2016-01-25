@@ -13,4 +13,8 @@
         <item>Delete locally</item>
         <item>Delete Permanently</item>
     </string-array>
+
+
+    <string name="spinnerAffTitle">Choose Affilation</string>
+    <string name="spinnerType">Choose Type</string>
 </resources>

@@ -39,6 +39,7 @@
         <activity android:name=".EvolveActivities.MakeAppointment" />
         <activity android:name=".EvolveActivities.SchoolSearchActivity" />
         <activity android:name=".EvolveActivities.SchoolDetailsActivity"></activity>
+        <activity android:name=".EvolveActivities.SchoolFilterActivity"></activity>
     </application>
 
 </manifest>
