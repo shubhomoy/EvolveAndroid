@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     EvolveDatabase evolveDatabase;
     EvolvePreferences prefs;
 
-
     int CAMERA_CAPTURE_TAG = 0;
     int PREVIEW_TAG = 1;
     int RESULT_LOAD_IMG=2;

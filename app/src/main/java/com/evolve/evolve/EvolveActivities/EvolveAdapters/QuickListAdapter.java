@@ -9,50 +9,67 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.evolve.evolve.EvolveActivities.DoctorSearchActivity;
+import com.evolve.evolve.EvolveActivities.SchoolSearchActivity;
 import com.evolve.evolve.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by vellapanti on 2/12/15.
  */
-public class QuickListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class QuickListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private LayoutInflater inflater;
     Context context;
-    public QuickListAdapter(Context context){
-        this.context=context;
-        inflater=LayoutInflater.from(context);
+    ArrayList<String> helpList;
+
+    public QuickListAdapter(Context context, ArrayList<String> helpList) {
+        this.context = context;
+        this.helpList = helpList;
+        inflater = LayoutInflater.from(context);
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
-        view=inflater.inflate(R.layout.custom_quicklistview,parent,false);
-        QuickListViewHolder quickListViewHolder=new QuickListViewHolder(view);
+        view = inflater.inflate(R.layout.custom_quicklistview, parent, false);
+        QuickListViewHolder quickListViewHolder = new QuickListViewHolder(view);
 
         return quickListViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        QuickListViewHolder viewHolder=(QuickListViewHolder)holder;
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        QuickListViewHolder viewHolder = (QuickListViewHolder) holder;
+        viewHolder.quicklist.setText(helpList.get(position).toString());
         viewHolder.quicklist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= new Intent(context, DoctorSearchActivity.class);
-                context.startActivity(intent);
+                switch (position){
+                    case 0:
+                        Intent doctorIntent = new Intent(context, DoctorSearchActivity.class);
+                        context.startActivity(doctorIntent);
+                        break;
+                    case 1:
+                        Intent schoolIntent = new Intent(context, SchoolSearchActivity.class);
+                        context.startActivity(schoolIntent);
+                        break;
+                }
+
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return 1;
+        return helpList.size();
     }
 
-    class QuickListViewHolder extends RecyclerView.ViewHolder{
+    class QuickListViewHolder extends RecyclerView.ViewHolder {
         TextView quicklist;
+
         public QuickListViewHolder(View itemView) {
             super(itemView);
-            quicklist=(TextView)itemView.findViewById(R.id.quicklist_item);
+            quicklist = (TextView) itemView.findViewById(R.id.quicklist_item);
         }
     }
 }

@@ -53,16 +53,16 @@ public class ClinicDetailsActivity extends AppCompatActivity {
         clinicId = intent.getIntExtra("clinicId", 0);
 
         setClinicDetails(clinicId);
-//
-//        bookTicket.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent i = new Intent(ClinicDetailsActivity.this, MakeAppointment.class);
-//                i.putExtra("docId", doctorId);
-//                i.putExtra("clinicId", clinicId);
-//                startActivity(i);
-//            }
-//        });
+
+        bookTicket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(ClinicDetailsActivity.this, MakeAppointment.class);
+                i.putExtra("docId", doctorId);
+                i.putExtra("clinicId", clinicId);
+                startActivity(i);
+            }
+        });
 
 
         mapView.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +108,8 @@ public class ClinicDetailsActivity extends AppCompatActivity {
                     facilities.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            facilitiesProvided.removeAll(facilitiesProvided);
+                            facilitiesProvided.clear();
                             AlertDialog.Builder builder = new AlertDialog.Builder(ClinicDetailsActivity.this);
                             LayoutInflater inflater = LayoutInflater.from(ClinicDetailsActivity.this);
                             View row = inflater.inflate(R.layout.custom_show_clinics, null);

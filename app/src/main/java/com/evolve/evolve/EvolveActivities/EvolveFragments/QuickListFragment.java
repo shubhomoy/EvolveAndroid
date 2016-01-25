@@ -12,12 +12,15 @@ import android.view.ViewGroup;
 import com.evolve.evolve.EvolveActivities.EvolveAdapters.QuickListAdapter;
 import com.evolve.evolve.R;
 
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class QuickListFragment extends Fragment {
     RecyclerView recyclerView_quicklist;
     QuickListAdapter quickListAdapter;
+    ArrayList<String> helpList;
     public QuickListFragment() {
         // Required empty public constructor
     }
@@ -25,7 +28,11 @@ public class QuickListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        quickListAdapter=new QuickListAdapter(getActivity());
+        helpList = new ArrayList<>();
+        helpList.add("Find a Doctor");
+        helpList.add("Find a School");
+        quickListAdapter=new QuickListAdapter(getActivity(),helpList);
+
     }
 
     @Override
