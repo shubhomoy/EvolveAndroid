@@ -13,12 +13,18 @@
         card_view:cardCornerRadius="4dp"
         card_view:contentPadding="5dp">
 
-        <TextView
-            android:id="@+id/quicklist_item"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Find a Doctor"
-            android:textSize="18sp" />
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground">
+
+            <TextView
+                android:id="@+id/quicklist_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="Find a Doctor"
+                android:textSize="18sp" />
+        </RelativeLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

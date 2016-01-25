@@ -2,6 +2,7 @@ package com.evolve.evolve.EvolveActivities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -132,7 +133,7 @@ public class DoctorDetailsActivity extends AppCompatActivity {
     }
 
     private void setDocdetails(int id) {
-
+        final int flagid = id;
         String url = Config.apiUrl + "/doctor/" + id;
         EvolveRequest request = new EvolveRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -176,6 +177,16 @@ public class DoctorDetailsActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressDialog.cancel();
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(DoctorDetailsActivity.this);
+                builder.setTitle("Connection Failed");
+                builder.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        setDocdetails(flagid);
+                        //finishActivity(getIntent());
+                    }
+                });
+                builder.create().show();
             }
         }, DoctorDetailsActivity.this);
         VolleySingleton.getInstance().getRequestQueue().add(request);

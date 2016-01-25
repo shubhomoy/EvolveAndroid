@@ -45,7 +45,7 @@ public class MakeAppointment extends AppCompatActivity {
     int year, month, day;
     int docId, clinicId;
 
-    private ProgressDialog progressDialog;
+    private static ProgressDialog progressDialog;
     private DatePickerDialog.OnDateSetListener pickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int selectedYear,
@@ -153,7 +153,76 @@ public class MakeAppointment extends AppCompatActivity {
             }
         });
     }
-
+    private void bookAppointment(){
+        if(checkInput()) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
+            String url = Config.apiUrl+"/appointment";
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        Log.d("option", jsonObject.getString("data"));
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MakeAppointment.this);
+                        builder.setTitle("Enter OTP");
+                        View v = LayoutInflater.from(MakeAppointment.this).inflate(R.layout.otp, null);
+                        final EditText otpEt = (EditText)v.findViewById(R.id.otpEt);
+                        builder.setView(v);
+                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (otpEt.getText().toString().trim().length() > 0) {
+                                    verifyAppointment(otpEt.getText().toString());
+                                }
+                            }
+                        });
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        progressDialog.cancel();
+                        builder.create().show();
+                    } catch (JSONException e) {
+                        progressDialog.cancel();
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    progressDialog.cancel();
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MakeAppointment.this);
+                    builder.setTitle("Connection Failed");
+                    builder.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            bookAppointment();
+                        }
+                    });
+                    builder.create().show();
+                    Log.d("option", error.toString());
+                }
+            }){
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    HashMap<String, String> params = new HashMap<String, String>();
+                    params.put("name", nameEt.getText().toString());
+                    params.put("email", emailEt.getText().toString());
+                    params.put("time", dateEt.getText().toString());
+                    params.put("phone", phoneEt.getText().toString());
+                    params.put("description", descriptionEt.getText().toString());
+                    params.put("doctor_id", String.valueOf(docId));
+                    params.put("clinic_id", String.valueOf(clinicId));
+                    return params;
+                }
+            };
+            VolleySingleton.getInstance().getRequestQueue().add(stringRequest);
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.make_appointment, menu);
@@ -167,65 +236,7 @@ public class MakeAppointment extends AppCompatActivity {
                 finish();
                 break;
             case R.id.done:
-                if(checkInput()) {
-                    progressDialog = new ProgressDialog(this);
-                    progressDialog.setMessage("Loading...");
-                    progressDialog.show();
-                    String url = Config.apiUrl+"/appointment";
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                Log.d("option", jsonObject.getString("data"));
-                                AlertDialog.Builder builder = new AlertDialog.Builder(MakeAppointment.this);
-                                builder.setTitle("Enter OTP");
-                                View v = LayoutInflater.from(MakeAppointment.this).inflate(R.layout.otp, null);
-                                final EditText otpEt = (EditText)v.findViewById(R.id.otpEt);
-                                builder.setView(v);
-                                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        if (otpEt.getText().toString().trim().length() > 0) {
-                                            verifyAppointment(otpEt.getText().toString());
-                                        }
-                                    }
-                                });
-                                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        dialogInterface.dismiss();
-                                    }
-                                });
-                                progressDialog.cancel();
-                                builder.create().show();
-                            } catch (JSONException e) {
-                                progressDialog.cancel();
-                                e.printStackTrace();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            progressDialog.cancel();
-                            Log.d("option", error.toString());
-                        }
-                    }){
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            HashMap<String, String> params = new HashMap<String, String>();
-                            params.put("name", nameEt.getText().toString());
-                            params.put("email", emailEt.getText().toString());
-                            params.put("time", dateEt.getText().toString());
-                            params.put("phone", phoneEt.getText().toString());
-                            params.put("description", descriptionEt.getText().toString());
-                            params.put("doctor_id", String.valueOf(docId));
-                            params.put("clinic_id", String.valueOf(clinicId));
-                            return params;
-                        }
-                    };
-                    VolleySingleton.getInstance().getRequestQueue().add(stringRequest);
-                }
+                bookAppointment();
                 break;
         }
         return super.onOptionsItemSelected(item);
