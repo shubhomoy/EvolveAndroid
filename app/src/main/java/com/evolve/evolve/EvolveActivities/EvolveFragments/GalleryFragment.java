@@ -1,12 +1,9 @@
 package com.evolve.evolve.EvolveActivities.EvolveFragments;
 
-
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -146,7 +143,7 @@ public class GalleryFragment extends Fragment {
                     String [] files = dir.list();
                     final ImageManipulator manipulator = new ImageManipulator();
 
-                    for(int i=0; i<arr.length(); i++) {
+                    for(int i=0; i<arr.length();  i++) {
                         final Image image = gson.fromJson(arr.getJSONObject(i).toString(), Image.class);
                         imageList.add(image);
                         boolean flag = false;
@@ -205,12 +202,13 @@ public class GalleryFragment extends Fragment {
                 }
                 evolveDatabase.close();
             }
-        }, new Response.ErrorListener() {
+        },new Response.ErrorListener(){
+
             @Override
             public void onErrorResponse(VolleyError error) {
-                refreshGallery();
+
             }
-        }, getActivity());
+        },getActivity());
         VolleySingleton.getInstance().getRequestQueue().add(evolveRequest);
     }
 }

@@ -16,21 +16,21 @@
         android:layout_height="wrap_content"
         android:padding="20dp">
 
+        <ImageView
+            android:id="@+id/school_img"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_margin="10dp"
+            android:src="@mipmap/ic_launcher" />
         <TextView
-            android:id="@+id/doc_name"
+            android:id="@+id/school_name"
+            android:layout_toRightOf="@+id/school_img"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Doctor name"
+            android:text="School name"
             android:textColor="#2e2e2e"
             android:textSize="18sp" />
 
-        <TextView
-            android:layout_below="@+id/doc_name"
-            android:id="@+id/doc_clinic"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Doctor clinic"
-            android:textSize="15sp" />
 
     </RelativeLayout>
 

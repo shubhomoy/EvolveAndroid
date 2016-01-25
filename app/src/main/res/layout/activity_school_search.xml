@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.evolve.evolve.EvolveActivities.DoctorSearchActivity">
+    tools:context="com.evolve.evolve.EvolveActivities.SchoolSearchActivity">
 
 
     <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
@@ -23,7 +23,7 @@
             android:background="@android:color/transparent"
             android:drawableLeft="@mipmap/ic_search_white_24dp"
             android:drawablePadding="10dp"
-            android:hint="Type Doctors, Clinics..."
+            android:hint="Type Schools..."
             android:padding="15dp"
             android:textColor="#FFFFFF"
             android:textColorHint="#fff" />
@@ -59,7 +59,7 @@
             android:layout_below="@+id/empty"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:text="Search any Doctor,\nClinics or Specialization"
+            android:text="Search any School"
             android:textSize="18sp" />
 
     </RelativeLayout>

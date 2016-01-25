@@ -13,10 +13,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.evolve.evolve.EvolveActivities.EvolveAdapters.MainpagePagerAdapter;
 import com.evolve.evolve.EvolveActivities.EvolveFragments.GalleryFragment;
+import com.evolve.evolve.EvolveActivities.EvolveFragments.QuickListFragment;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolveDatabase;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.EvolvePreferences;
 import com.evolve.evolve.R;
@@ -45,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
     File image_file;
     String timeStamp;
     GalleryFragment galleryFragment;
+    QuickListFragment quickListFragment;
     EvolveDatabase evolveDatabase;
     EvolvePreferences prefs;
-
 
     int CAMERA_CAPTURE_TAG = 0;
     int PREVIEW_TAG = 1;
@@ -59,7 +59,9 @@ public class MainActivity extends AppCompatActivity {
         pager = (ViewPager) findViewById(R.id.view_pager);
         pageList = new ArrayList<>();
         galleryFragment = new GalleryFragment();
+        quickListFragment=new QuickListFragment();
         pageList.add(galleryFragment);
+        pageList.add(quickListFragment);
         fabMenu = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
         uploadBtn = (FloatingActionButton) findViewById(R.id.action_a);
         cameraBtn = (FloatingActionButton) findViewById(R.id.action_b);
@@ -112,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == CAMERA_CAPTURE_TAG && resultCode == RESULT_OK) {
-            if (image_file.exists()) {
+            if (image_file!= null && image_file.exists()) {
                 Intent in = new Intent(MainActivity.this, PreviewActivity.class);
                 in.putExtra("file", timeStamp);
                 startActivityForResult(in, PREVIEW_TAG);

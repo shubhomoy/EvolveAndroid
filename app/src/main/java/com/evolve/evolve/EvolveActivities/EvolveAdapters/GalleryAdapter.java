@@ -159,7 +159,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             });
         }else if(holder instanceof GalleryHeaderViewHolder) {
             GalleryHeaderViewHolder viewHolder = (GalleryHeaderViewHolder)holder;
-
+            Glide.with(context).load(Environment.getExternalStorageDirectory().toString() + "/Evolve/" + filename.get(position)).into(viewHolder.rawImage);
         }
     }
 
