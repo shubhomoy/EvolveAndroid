@@ -1,6 +1,9 @@
 package com.evolve.evolve.EvolveActivities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,12 +28,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class SchoolSearchActivity extends AppCompatActivity {
+public class SchoolResultActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ArrayList<School> list;
     Context context;
     SchoolSearchAdapter adapter;
+    ProgressDialog progressDialog;
 
     void instantiate() {
         context = this;
@@ -40,6 +44,7 @@ public class SchoolSearchActivity extends AppCompatActivity {
         list = new ArrayList<>();
         adapter = new SchoolSearchAdapter(context, list);
         recyclerView.setAdapter(adapter);
+        progressDialog = new ProgressDialog(this);
     }
 
     @Override
@@ -47,11 +52,18 @@ public class SchoolSearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_school_search);
         instantiate();
+        search();
+    }
 
+    void search() {
+        progressDialog.setMessage("Searching");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         String url = Config.apiUrl+"/schools";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                progressDialog.dismiss();
                 try {
                     list.removeAll(list);
                     list.clear();
@@ -70,9 +82,30 @@ public class SchoolSearchActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("option", error.toString());
+                progressDialog.dismiss();
+                retry();
                 Toast.makeText(context, "Connection timeout", Toast.LENGTH_LONG).show();
             }
         });
         VolleySingleton.getInstance().getRequestQueue().add(jsonObjectRequest);
+    }
+
+    void retry() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Retry");
+        builder.setMessage("Your connection seems slow. Retry?");
+        builder.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                search();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        builder.create().show();
     }
 }

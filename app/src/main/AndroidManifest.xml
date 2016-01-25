@@ -37,7 +37,7 @@
         <activity android:name=".EvolveActivities.DoctorDetailsActivity" />
         <activity android:name=".EvolveActivities.ClinicDetailsActivity" />
         <activity android:name=".EvolveActivities.MakeAppointment" />
-        <activity android:name=".EvolveActivities.SchoolSearchActivity" />
+        <activity android:name=".EvolveActivities.SchoolResultActivity" />
         <activity android:name=".EvolveActivities.SchoolDetailsActivity"></activity>
         <activity android:name=".EvolveActivities.SchoolFilterActivity"></activity>
     </application>
