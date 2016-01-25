@@ -21,15 +21,9 @@ public class School {
     public ArrayList<Affiliation> affiliations;
     public ArrayList<Type> types;
 
-    public class Pivot {
-        public String school_id;
-        public String school_affiliation_id;
-    }
-
     public class Affiliation {
         public String id;
         public String affiliation;
-        public Pivot pivot;
     }
 
     public class Type {
