@@ -12,6 +12,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.evolve.evolve.EvolveActivities.EvolveAdapters.SchoolSearchAdapter;
 import com.evolve.evolve.EvolveActivities.EvolveObjects.School;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.Config;
 import com.evolve.evolve.EvolveActivities.EvolveUtilities.VolleySingleton;
@@ -29,6 +30,7 @@ public class SchoolSearchActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ArrayList<School> list;
     Context context;
+    SchoolSearchAdapter adapter;
 
     void instantiate() {
         context = this;
@@ -36,6 +38,8 @@ public class SchoolSearchActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         list = new ArrayList<>();
+        adapter = new SchoolSearchAdapter(context, list);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -57,7 +61,7 @@ public class SchoolSearchActivity extends AppCompatActivity {
                         School school = gson.fromJson(jsonArray.getJSONObject(i).toString(), School.class);
                         list.add(school);
                     }
-
+                    adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     Toast.makeText(context, "Something went wrong", Toast.LENGTH_LONG).show();
                 }
