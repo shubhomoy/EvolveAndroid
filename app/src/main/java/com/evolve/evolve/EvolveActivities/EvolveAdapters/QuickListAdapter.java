@@ -2,10 +2,12 @@ package com.evolve.evolve.EvolveActivities.EvolveAdapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.evolve.evolve.EvolveActivities.DoctorSearchActivity;
@@ -21,6 +23,9 @@ public class QuickListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private LayoutInflater inflater;
     Context context;
     ArrayList<String> helpList;
+
+    private static final int[] icons = {R.mipmap.ic_local_hospital_black_24dp,
+            R.mipmap.ic_school_black_24dp};
 
     public QuickListAdapter(Context context, ArrayList<String> helpList) {
         this.context = context;
@@ -41,7 +46,9 @@ public class QuickListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         QuickListViewHolder viewHolder = (QuickListViewHolder) holder;
         viewHolder.quicklist.setText(helpList.get(position).toString());
-        viewHolder.quicklist.setOnClickListener(new View.OnClickListener() {
+        viewHolder.itemLogo.setImageResource(icons[position]);
+
+        viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (position) {
@@ -54,7 +61,6 @@ public class QuickListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         context.startActivity(schoolIntent);
                         break;
                 }
-
             }
         });
     }
@@ -65,11 +71,15 @@ public class QuickListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     class QuickListViewHolder extends RecyclerView.ViewHolder {
-        TextView quicklist;
+        private TextView quicklist;
+        private ImageView itemLogo;
+        private CardView cardView;
 
         public QuickListViewHolder(View itemView) {
             super(itemView);
             quicklist = (TextView) itemView.findViewById(R.id.quicklist_item);
+            itemLogo = (ImageView) itemView.findViewById(R.id.item_logo);
+            cardView = (CardView) itemView.findViewById(R.id.card_root);
         }
     }
 }
