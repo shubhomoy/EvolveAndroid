@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class School {
 
-    public String id;
+    public int id;
     public String name;
     public String description;
     public String fee_structure;

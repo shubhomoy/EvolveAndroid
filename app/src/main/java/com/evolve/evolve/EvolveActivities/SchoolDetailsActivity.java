@@ -56,7 +56,7 @@ public class SchoolDetailsActivity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 Gson gson = new Gson();
                 try {
-                    final School school = gson.fromJson(response.getString("school"), School.class);
+                    School school = gson.fromJson(response.getString("school"), School.class);
                     schoolName.setText(school.name);
                     String affiliations = "";
                     for (int i = 0; i < school.affiliations.size(); i++) {
