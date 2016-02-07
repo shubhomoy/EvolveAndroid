@@ -25,6 +25,8 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/school_img"
             android:text="School name"
+            android:layout_centerVertical="true"
+            android:paddingLeft="10dp"
             android:textColor="#2e2e2e"
             android:textSize="18sp" />
 

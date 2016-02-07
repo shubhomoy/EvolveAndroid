@@ -36,12 +36,8 @@ public class SchoolSearchAdapter extends RecyclerView.Adapter<SchoolSearchAdapte
 
     @Override
     public void onBindViewHolder(SchoolSearchViewHolder holder, int position) {
-
-
         holder.schoolName.setText(schools.get(position).name);
         String url = schools.get(position).logo_url;
-        Glide.with(context).load(url).into(holder.schoolImage);
-
     }
 
     @Override
