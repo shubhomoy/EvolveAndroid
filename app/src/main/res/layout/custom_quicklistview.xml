@@ -22,6 +22,7 @@
             android:src="@mipmap/ic_local_hospital_black_24dp"
             android:tint="#777" />
 
+
         <TextView
             android:id="@+id/quicklist_item"
             android:layout_width="match_parent"
