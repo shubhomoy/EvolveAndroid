@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -35,6 +36,7 @@ public class SchoolDetailsActivity extends AppCompatActivity {
     private ImageView schoolLogo;
     private Button schoolExtra;
     private static int schoolid;
+    Toolbar toolbar;
     private static ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,5 +113,8 @@ public class SchoolDetailsActivity extends AppCompatActivity {
         schoolPrincipal = (TextView) findViewById(R.id.school_princ);
         schoolLogo = (ImageView) findViewById(R.id.school_img);
         schoolExtra = (Button) findViewById(R.id.show_extra);
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("School Details");
     }
 }

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -35,9 +36,13 @@ public class SchoolResultActivity extends AppCompatActivity {
     Context context;
     SchoolSearchAdapter adapter;
     ProgressDialog progressDialog;
+    Toolbar toolbar;
 
     void instantiate() {
         context = this;
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("School Result");
         recyclerView = (RecyclerView)findViewById(R.id.search_result_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
